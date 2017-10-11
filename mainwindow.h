@@ -18,9 +18,19 @@ public:
 
 private:
   Ui::MainWindow *ui;
+  QStringList fileName_DATAs;
+  QString fileName_DATA;
 
  private slots:
-  void openBoms(void);
+  //функции, привязанные к кнопкам
+  void openBoms();
+  void openSklad();
+  void clear();
+  void generate();
+  //вспомогательные функции
+  void operationSumRefDez();
+
+  void operationSklad();
 
 };
 

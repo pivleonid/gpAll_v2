@@ -32,6 +32,7 @@ QAxObject* sheet = excel.documentSheetActive(name);
 
 #include "qdebug.h"
 #include "qaxobject.h"
+#include "QStringList"
 
 
 #ifndef ACTIVEEXCEL_H
@@ -67,6 +68,11 @@ public:
   QAxObject* documentOpen(QVariant path = "");      /*!< [in] path = "" открывается пустой документ   */
   /*==================================================================*/
   /*!  \brief
+   Получение списка листов в документе
+  */
+  QStringList sheetsList();
+  /*==================================================================*/
+  /*!  \brief
    Возвращает указатель на созданный лист
    По умолчанию создается Лист1, Лист2 ...
   */
@@ -76,7 +82,7 @@ public:
    \param [in] sheet - имя листа. По умолчанию создается Лист1, Лист2 ...
   \return  указатель листа
   */
-  QAxObject* documentSheetActive(QVariant sheet);
+  QAxObject* documentSheetActive(QString sheet);
   /*==================================================================*/
   /*!  \brief
   Закрытие документа без сохранения.

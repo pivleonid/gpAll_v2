@@ -38,10 +38,23 @@ QAxObject* ActiveExcel::documentOpen(QVariant path){
       if(workSheet_ == NULL)
         return NULL;
       sheets_ = document->querySubObject( "Sheets" );
+
       if(sheets_ == NULL)
         return NULL;
     }
  return document;
+}
+
+QStringList ActiveExcel::sheetsList(){
+  int numb = workSheet_->dynamicCall("Count").toInt();
+  QStringList names;
+  for(int i = 1; i < numb+1; i++){
+      QAxObject* sheet = workSheet_->querySubObject("Item(const QVariant &)", QVariant(i));
+      QVariant name = sheet->dynamicCall("Name");
+      names << name.toString();
+      delete sheet;
+    }
+  return names;
 }
 
 
@@ -54,7 +67,7 @@ QAxObject* ActiveExcel::documentAddSheet(QVariant sheetName ){
     return active;
 }
 
-QAxObject* ActiveExcel::documentSheetActive( QVariant sheet){
+QAxObject* ActiveExcel::documentSheetActive( QString sheet){
 
     return sheets_->querySubObject( "Item(const QVariant&)", sheet );
 
