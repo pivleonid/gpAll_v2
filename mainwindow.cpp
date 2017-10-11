@@ -103,6 +103,7 @@ void MainWindow::openBoms(){
          foreach (QString key, mapVarLisr.keys ()) {
              mapVarLisrCont[key];
            }
+         bool flag = true;
     //Сортировака QMAP
          foreach (QString key, mapVarLisr.keys ()) {
              for( QStringList::iterator it = mapVarLisr[key].begin(); it < mapVarLisr[key].end(); it++){
@@ -114,21 +115,23 @@ void MainWindow::openBoms(){
                    continue;
                  }
                  QString a = (*it);
-                 QString b = mapVarLisrCont[key].at(0).at(0);
+                 flag = true;
                  for (QList<QStringList>::iterator var = mapVarLisrCont[key].begin(); var < mapVarLisrCont[key].end(); var++) {
-                   QString z =   (*var).at(0);
+                     QString z =   (*var).at(0);
                      if( (*var).at(0) == a ){
                          int number = (*var).at(1).toInt();
                          ++number;
                          (*var)[1] = QString::number(number);
-                         int i = 0;
-                         i++;
+                         flag = false;
                          break;
                        }
-                     QStringList peremen;
-                     peremen << *it << "1";
-                     mapVarLisrCont[key].append (peremen);
-                     continue;
+
+                   }
+                 if(flag == true){
+                 QStringList peremen;
+                 peremen << *it << "1";
+                 mapVarLisrCont[key].append (peremen);
+                 continue;
                    }
                }
            }
