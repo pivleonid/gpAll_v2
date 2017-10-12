@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
+
+
 }
 
 
@@ -58,233 +60,65 @@ void MainWindow::clear(){
 
 void MainWindow::generate(){
 
-  //-- Складские данные
-  ActiveExcel excel;
-  if(!excel.excelConnect()){
-      mesOut("Не установлен excel");
-      return;
+  listStringInt_t dataSklad;
+  dataSklad = operationSklad();
+  QMap<QString, QList<QStringList> > dataBom, dataBomOut;
+  operationSumRefDez(dataBom);
+  operationSearch(dataBom);
+  //Заполняю ключами
+  foreach (QString key, dataBom.keys ()) {
+      dataBomOut[key];
     }
-  QAxObject* ex1 = excel.documentOpen(QVariant(fileName_DATA));
-  if(ex1 == NULL)
-    mesOut("Невозможно открыть файл склада:\n" + fileName_DATA
-           +"\nПроверте возможность редактирования");
-  //
-  QStringList names =  excel.sheetsList();
-  QStringList varPerem;
-  QVariant data;
 
-  foreach (QString name, names) {
-      QAxObject* sheetActiv = excel.documentSheetActive(name);
-      int colType = 0;
-      int colCol = 0;
-      int rol = 0;
-      bool flagEnd = false;
-      QVariant data, data1;
-      //Поиск слов "Тип" и  "Кол-во" с 1 по 3 строчку
-      for(int i = 2; i < 4  ; i++){
-          if (flagEnd == true)
-            break;
-          //бегу по строчке, пока не встречу подряд 3 пустых ячейки
-          for(int j = 1; ; j++){
-              if (excel.sheetCellInsert(sheetActiv, data, i, j)){
-                  if( data.toString() == "Тип" )
-                    colType = j;
-                  if( data.toString() == "Кол-во" )
-                    colCol = j;
-                  if(colType != 0 && colCol != 0 ){
-                      rol = i;
-                      flagEnd = true;
-                      break;
-                    }
-                  excel.sheetCellInsert(sheetActiv, data1, i, j + 1);
-                  if( data.toString() == data1.toString() ){
-                      flagEnd = true;
-                      break;
-                    }
+  bool flag = false; //найден ли элемент?
+  // поиск данных в складе
+  //пробегаюсь по всем ключам
+  foreach (QString key, dataBom.keys ()) {
+      //пробегаюсь по значению ключа
+      for( QList<QStringList>::iterator it = dataBom[key].begin(); it < dataBom[key].end(); it++){
 
-
-                }
-              else{
-                  mesOut("Ошибка обработки данных!");
-                  return;
+          QString dBOM = (*it).at(0);
+          //бегу по складским данным
+          //var = {QString, int}
+          foreach (auto var, dataSklad) {
+              QString str = var.str;
+              if(str.contains(dBOM, Qt::CaseInsensitive) == true){ //Если строка содержит подстроку
+                  //на складе  элемент найден
+                  QStringList peremen;
+                  peremen << *it << QString::number(var.n);
+                  dataBomOut[key].append (peremen);
+                  flag = true;
+                  break;
                 }
             }
+          if(flag == true){
+              flag = false;
+              continue;// следующий элемент
+          }
+          //на складе  элемент не найден
+          QStringList peremen;
+          peremen << *it << QString::number(1);
+          dataBomOut[key].append (peremen);
 
-        }
-      //если не найдена или строка или столбец или строчка- пропуск листа
-      if(colType == 0 || colCol == 0 || rol == 0)
-        continue;
-      for(int i = 3;  ; i++){
-          if (excel.sheetCellInsert(sheetActiv, data, i, 4))
-            varPerem << data.toString();
-          else{
-              mesOut("Ошибка обработки данных!");
-              return;
-            }
-          if (excel.sheetCellInsert(sheetActiv, data, i, 6))
-            varPerem << data.toString();
-          else{
-              mesOut("Ошибка обработки данных!");
-              return;
-            }
-          int g = varPerem.count();
-          if(varPerem[g-1] == "" && varPerem[g-2] == "" )
-            break;
-
-        }
-
+         }
     }
 
-  struct list_t{
-    QString str;
-    int n;
-  };
-  QList<list_t> sklad;
-
-  for (QStringList::iterator it = varPerem.begin(); it < varPerem.end() - 1; it += 2) {
-
-      QString a = *it;
-      int num  = (*(it + 1)).toInt();
-      list_t list;
-      list.str = a;
-      list.n = num;
-      sklad.append(list);
-
-    }
-  excel.documentClose(ex1);
-   //-- BOM данные
-
-  ActiveExcel excel1;
-  if(!excel1.excelConnect()){
-      mesOut("Не установлен excel1");
-      return;
-    }
-  //все BOM'ы
-  QStringList var;
-  foreach (auto str, fileName_DATAs) {
-
-      QAxObject* ex1 = excel1.documentOpen(QVariant(str));
-      if(ex1 == NULL)
-        mesOut("Невозможно открыть BOM:\n" + str
-               +"\nПроверте возможность редактирования");
-      //
-      QString name = excel1.sheetName().toString();
-      QAxObject* sheet = excel1.documentSheetActive(name);
-
-
-
-      QStringList varPerem;
-      QVariant data;
-      // 20 секунд на чтение
-
-      ui->progressBar->setValue(0);
-      ///ЧТЕНИЕ ДАННЫХ!!!
-      for(int i = 2;  ; i++){
-          if (excel1.sheetCellInsert(sheet, data, i, 2))
-            varPerem << data.toString();
-          else{
-              mesOut("Ошибка обработки данных!");
-              return;
-            }
-          if (excel1.sheetCellInsert(sheet, data, i, 3))
-            varPerem << data.toString();
-          else{
-              mesOut("Ошибка обработки данных!");
-              return;
-            }
-          int g = varPerem.count();
-                if(varPerem[g-1] == "" && varPerem[g-2] == "" )
-                 break;
-
-        }
-      var << varPerem;
-      excel1.documentClose(ex1);
-    }
-//--начало формирования Всех префиксов
-  QStringList Prefix, allPrefix;
-      for (QStringList::iterator it = var.begin(); it < var.end(); it++) {
-          Prefix << *it;
-          it++;
-      }
-      for (QStringList::iterator it = Prefix.begin(); it < Prefix.end(); it++) {
-          (*it).remove(QRegExp("[^A-Za-zА-Яа-я]"));
-      }
-      //Удаляю дубликаты
-      for (QStringList::iterator it = Prefix.begin(); it < Prefix.end() -1;it++) {
-          if( allPrefix.indexOf(*it) < 0 && (*it) != "")
-            allPrefix << *it;
-        }
-//--Конец формирования Всех префиксов
-     //Формирование QMAP
-      QMap<QString, QStringList > mapVarLisr;
-             foreach (auto it, allPrefix) {
-                 for (QStringList::iterator it1 = var.begin();it1 < var.end(); it1++) {
-                     QString name = *it1;
-                     name = name.remove(QRegExp("[^A-Za-zА-Яа-я]"));
-                     if( it == name)
-                         mapVarLisr[it].append (*(it1 + 1));
-                     it1++;// т.к. след. значение через 1
-                 }
-             }
-     //Сортировака QMAP--заполнение ключами
-             // Вид mapVarLisrCont - [C] -> [partNumber][кол-во элементов]
-                                   //    -> [partNumber][кол-во элементов]
-         QMap<QString, QList<QStringList> > mapVarLisrCont;
-         //копирую ключи
-         foreach (QString key, mapVarLisr.keys ()) {
-             mapVarLisrCont[key];
-           }
-         bool flag = true;
-    //---Сортировака QMAP
-         //пробегаюсь по всем ключам
-         foreach (QString key, mapVarLisr.keys ()) {
-             //пробегаюсь по значению ключа
-             for( QStringList::iterator it = mapVarLisr[key].begin(); it < mapVarLisr[key].end(); it++){
-                 //Первый влет- по ключу запиывается первый элемент
-                if(it == mapVarLisr[key].begin()){
-                   QStringList peremen;
-                   peremen << *it << "1";
-                   mapVarLisrCont[key].append (peremen);
-                   continue;
-                 }
-                 QString a = (*it); // для отладки
-                 flag = true;
-                 //Если по такому ключу и с таким partnumber содержится элемент- кол-во + 1
-                 for (QList<QStringList>::iterator var = mapVarLisrCont[key].begin(); var < mapVarLisrCont[key].end(); var++) {
-                     QString z =   (*var).at(0);
-                     if( (*var).at(0) == a ){
-                         int number = (*var).at(1).toInt();
-                         ++number;
-                         (*var)[1] = QString::number(number);
-                         flag = false;
-                         break;
-                       }
-
-                   }
-                 //если элемент уже был найден- смотрю следующее значение
-                 //если не был найден -  вношу этот элемент
-                 if(flag == true){
-                 QStringList peremen;
-                 peremen << *it << "1";
-                 mapVarLisrCont[key].append (peremen);
-                 continue;
-                   }
-               }
-           }
-          mapVarLisr.clear();// очищая предыдущий контейнер
-             int i = 0;
-             i++;
+  int u;
+  u++;
 
 
 }
 
 
 
-void MainWindow::operationSklad(){
+listStringInt_t MainWindow::operationSklad(){
+  listStringInt_t errMes;
+  list_t list{"", 0};
+  errMes.append(list);
   ActiveExcel excel;
   if(!excel.excelConnect()){
       mesOut("Не установлен excel");
-      return;
+      return errMes;
     }
   QAxObject* ex1 = excel.documentOpen(QVariant(fileName_DATA));
   if(ex1 == NULL)
@@ -327,8 +161,8 @@ void MainWindow::operationSklad(){
 
                 }
               else{
-                  mesOut("Ошибка обработки данных!");
-                  return;
+                  mesOut("Ошибка обработки данных со склада!");
+                  return errMes;
                 }
             }
 
@@ -340,14 +174,14 @@ void MainWindow::operationSklad(){
           if (excel.sheetCellInsert(sheetActiv, data, i, 4))
             varPerem << data.toString();
           else{
-              mesOut("Ошибка обработки данных!");
-              return;
+              mesOut("Ошибка обработки данных со склада!");
+              return errMes;
             }
           if (excel.sheetCellInsert(sheetActiv, data, i, 6))
             varPerem << data.toString();
           else{
-              mesOut("Ошибка обработки данных!");
-              return;
+              mesOut("Ошибка обработки данных со склада!");
+              return errMes;
             }
           int g = varPerem.count();
           if(varPerem[g-1] == "" && varPerem[g-2] == "" )
@@ -356,13 +190,7 @@ void MainWindow::operationSklad(){
         }
 
     }
-
-  struct list_t{
-    QString str;
-    int n;
-  };
-  QList<list_t> sklad;
-
+  listStringInt_t sklad;
   for (QStringList::iterator it = varPerem.begin(); it < varPerem.end() - 1; it += 2) {
 
       QString a = *it;
@@ -374,15 +202,24 @@ void MainWindow::operationSklad(){
 
     }
       excel.documentClose(ex1);
+      return sklad;
 
 }
 
-void MainWindow::operationSumRefDez(void){
+void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLisrCont){
+
+  QMap<QString, QList<QStringList> > errMes;
+  QStringList a;
+  a << "";
+ // QList<QStringList> b;
+ // b << a;
+ // errMes[""] =  b;
+
 
   ActiveExcel excel;
   if(!excel.excelConnect()){
       mesOut("Не установлен excel");
-      return;
+     // return errMes;
     }
   //все BOM'ы
   QStringList var;
@@ -408,14 +245,14 @@ void MainWindow::operationSumRefDez(void){
           if (excel.sheetCellInsert(sheet, data, i, 2))
             varPerem << data.toString();
           else{
-              mesOut("Ошибка обработки данных!");
-              return;
+              mesOut("Ошибка обработки BOM данных!");
+            //  return errMes;
             }
           if (excel.sheetCellInsert(sheet, data, i, 3))
             varPerem << data.toString();
           else{
-              mesOut("Ошибка обработки данных!");
-              return;
+              mesOut("Ошибка обработки BOM данных!");
+            //  return errMes;
             }
           int g = varPerem.count();
                 if(varPerem[g-1] == "" && varPerem[g-2] == "" )
@@ -454,7 +291,7 @@ void MainWindow::operationSumRefDez(void){
      //Сортировака QMAP--заполнение ключами
              // Вид mapVarLisrCont - [C] -> [partNumber][кол-во элементов]
                                    //    -> [partNumber][кол-во элементов]
-         QMap<QString, QList<QStringList> > mapVarLisrCont;
+        // QMap<QString, QList<QStringList> > mapVarLisrCont;
          //копирую ключи
          foreach (QString key, mapVarLisr.keys ()) {
              mapVarLisrCont[key];
@@ -497,8 +334,7 @@ void MainWindow::operationSumRefDez(void){
                }
            }
           mapVarLisr.clear();// очищая предыдущий контейнер
-             int i = 0;
-             i++;
+
 }
 
 
