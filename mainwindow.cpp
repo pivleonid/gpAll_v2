@@ -204,13 +204,9 @@ listStringInt_t MainWindow::operationSklad(){
 
 void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLisrCont){
 
-  QMap<QString, QList<QStringList> > errMes;
-  QStringList a;
-  a << "";
- // QList<QStringList> b;
- // b << a;
- // errMes[""] =  b;
 
+    QString str = ui->textEdit->toPlainText();
+    QStringList strList = str.split('\n');
 
   ActiveExcel excel;
   if(!excel.excelConnect()){
@@ -219,7 +215,7 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
     }
   //все BOM'ы
   QStringList var;
-  foreach (auto str, fileName_DATAs) {
+  foreach (auto str, strList) {
 
       QAxObject* ex1 = excel.documentOpen(QVariant(str));
       if(ex1 == NULL)
