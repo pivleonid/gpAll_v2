@@ -38,9 +38,15 @@ private:
   void clear();
   void generate();
   //вспомогательные функции
+  //Получение и суммирование всех BOM файлов
  void operationSumRefDez(QMap<QString, QList<QStringList>> & mapVarLisrCont);
+  //Получение данных со склада
   listStringInt_t operationSklad();
- void operationSearch( QMap<QString, QList<QStringList>> & dataSkladAndSum);
+  // поиск элементов из BOM файла в файле со складом.
+  // dataSkladAndSum = [ключ] -> [0] == "partNumber"
+  //                             [1] == "Кол-во всех элементов во всех BOM'ах"
+  //                             [2] == "Кол-во этих элементов на складе"
+ QList<QStringList> operationSearch( QMap<QString, QList<QStringList>> & dataSkladAndSum, listStringInt_t &dataSklad);
 
 };
 

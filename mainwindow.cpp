@@ -5,6 +5,8 @@
 #include "activeword.h"
 #include "qmessagebox.h"
 #include "qaxobject.h"
+#include "qtextcodec.h"
+#include "qdatetime.h"
 
 
 
@@ -60,49 +62,43 @@ void MainWindow::clear(){
 
 void MainWindow::generate(){
 
+    ActiveWord word;
+      if(!word.wordConnect()){
+          QMessageBox msgBox;
+          msgBox.setText("Word не установлен");
+          msgBox.exec();
+          return;
+        }
+     QString path = QApplication::applicationDirPath() + "/test.docx";
+      QAxObject* doc = word.documentOpen(path);
+      if(doc == NULL){
+          QMessageBox msgBox;
+            msgBox.setText("Не найден word- шаблон");
+            msgBox.exec();
+        return;
+        }
+
   listStringInt_t dataSklad;
   dataSklad = operationSklad();
   QMap<QString, QList<QStringList> > dataBom, dataBomOut;
   operationSumRefDez(dataBom);
-  operationSearch(dataBom);
-  //Заполняю ключами
-  foreach (QString key, dataBom.keys ()) {
-      dataBomOut[key];
+  QList<QStringList> datInWord;
+  datInWord = operationSearch(dataBom, dataSklad);
+
+  QString dt = QDateTime::currentDateTime().toString();
+  word.findReplaseLabel("[Dat]" , dt, false);
+
+
+  //заполнение таблицы
+  QStringList listLabel = word.tableGetLabels(1, 3);
+  ui->progressBar->setValue(70);
+  QCoreApplication::processEvents();
+  if (word.tableFill(datInWord,listLabel,1,3) < 0){
+      mesOut("Ошибка заполнения таблицы!");
+      word.setVisible();
+      return;
     }
-
-  bool flag = false; //найден ли элемент?
-  // поиск данных в складе
-  //пробегаюсь по всем ключам
-  foreach (QString key, dataBom.keys ()) {
-      //пробегаюсь по значению ключа
-      for( QList<QStringList>::iterator it = dataBom[key].begin(); it < dataBom[key].end(); it++){
-
-          QString dBOM = (*it).at(0);
-          //бегу по складским данным
-          //var = {QString, int}
-          foreach (auto var, dataSklad) {
-              QString str = var.str;
-              if(str.contains(dBOM, Qt::CaseInsensitive) == true){ //Если строка содержит подстроку
-                  //на складе  элемент найден
-                  QStringList peremen;
-                  peremen << *it << QString::number(var.n);
-                  dataBomOut[key].append (peremen);
-                  flag = true;
-                  break;
-                }
-            }
-          if(flag == true){
-              flag = false;
-              continue;// следующий элемент
-          }
-          //на складе  элемент не найден
-          QStringList peremen;
-          peremen << *it << QString::number(1);
-          dataBomOut[key].append (peremen);
-
-         }
-    }
-
+  word.setVisible();
   int u;
   u++;
 
@@ -339,7 +335,106 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
 
 
 
+QList<QStringList> MainWindow::operationSearch(QMap<QString, QList<QStringList> > &dataSkladAndSum, listStringInt_t &dataSklad){
+  QMap<QString, QList<QStringList> > dataBomOut;
+  //Заполняю ключами
+  foreach (QString key, dataSkladAndSum.keys ()) {
+      dataBomOut[key];
+    }
 
+  bool flag = false; //найден ли элемент?
+  // поиск данных в складе
+  //пробегаюсь по всем ключам
+  foreach (QString key, dataSkladAndSum.keys ()) {
+      //пробегаюсь по значению ключа
+      for( QList<QStringList>::iterator it = dataSkladAndSum[key].begin(); it < dataSkladAndSum[key].end(); it++){
+
+          QString dBOM = (*it).at(0);
+          //бегу по складским данным
+          //var = {QString, int}
+          foreach (auto var, dataSklad) {
+              QString str = var.str;
+              if(str.contains(dBOM, Qt::CaseInsensitive) == true){ //Если строка содержит подстроку
+                  //на складе  элемент найден
+                  QStringList peremen;
+                  peremen << *it << QString::number(var.n);
+                  dataBomOut[key].append (peremen);
+                  flag = true;
+                  break;
+                }
+            }
+          if(flag == true){
+              flag = false;
+              continue;// следующий элемент
+          }
+          //на складе  элемент не найден
+          QStringList peremen;
+          peremen << *it << QString::number(1);
+          dataBomOut[key].append (peremen);
+
+         }
+    }
+
+
+  QList<QStringList> inWord;
+  // по ключам
+  foreach (QString key, dataBomOut.keys ()) {
+      // по значению ключей
+      QStringList keys;
+      keys << "" << key << "";
+      inWord << keys;
+      keys.clear();
+      for( QList<QStringList>::iterator it = dataBomOut[key].begin(); it < dataBomOut[key].end(); it++){
+          keys << (*it).at(0) << (*it).at(1) << (*it).at(2);
+          inWord << keys;
+          keys.clear();
+        }
+    }
+
+
+  dataSkladAndSum.clear();
+  dataSkladAndSum = dataBomOut;
+
+
+  //
+    QString  str;
+    QFile file("Названия групп.txt");
+    QTextCodec *codec = QTextCodec::codecForName("CP1251");
+    if(file.open(QIODevice::ReadOnly |QIODevice::Text)){
+        while (!file.atEnd()){
+            QByteArray line = file.readLine();
+            QTextCodec *codec = QTextCodec::codecForName("CP1251");
+            str += codec->toUnicode(line);
+        }
+    }
+    else qDebug()<< "don't open file";
+    QStringList splitStr = str.split("\n");
+    QMap<QString, QString> tem;
+       foreach (auto st, splitStr) {
+           QStringList split = st.split("-");
+           tem[split[0]] = split[1];
+       }
+       QList<QString> keys = tem.keys();
+    for (QList<QStringList>::iterator var = inWord.begin(); var < inWord.end(); var++) {
+        if((*var).at(0) == (*var).at(2)){
+            QString b = (*(var )).at(1);
+            int index = keys.indexOf(b);
+            if( index < 0){
+                ( *(var)).clear();
+               (*var) << "" << "Прочие" << "";
+                continue;
+            }
+            QString str = keys[index];
+            QString a = tem[str];
+             ( *(var)).clear();
+            (*var) << "" << a << "";
+            int c;
+            c++;
+        }
+    }
+    return inWord;
+
+}
 
 
 
