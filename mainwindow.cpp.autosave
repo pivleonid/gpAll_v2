@@ -408,7 +408,7 @@ QList<QStringList> MainWindow::operationSearch(QMap<QString, QList<QStringList> 
   dataSkladAndSum = dataBomOut;
 
 
-  //
+  //замена меток. [C] - конденсаторы. 
     QString  str;
     QFile file("Названия групп.txt");
     QTextCodec *codec = QTextCodec::codecForName("CP1251");
