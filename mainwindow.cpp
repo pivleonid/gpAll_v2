@@ -19,16 +19,13 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->pushButton_2,SIGNAL(clicked(bool)),this,SLOT(openSklad()));
   connect(ui->pushButton_3,SIGNAL(clicked(bool)),this,SLOT(generate()));
   connect(ui->pushButton_4,SIGNAL(clicked(bool)),this,SLOT(clear()));
+  connect(ui->action,SIGNAL(triggered(bool)), this, SLOT(openAbout()));
+
    ui->progressBar->setValue(0);
 
 
-
-
-
 }
-
-
-
+//------------------------------------------------------------------------
 void MainWindow::openSklad(){
 
    fileName_DATA = QFileDialog::getOpenFileName(this, tr("Open Excel File"),"", tr("(*.xlsx *.xls)"));
@@ -39,8 +36,7 @@ void MainWindow::openSklad(){
   ui->label_2->setText(fileName_DATA);
 
 }
-
-
+//------------------------------------------------------------------------
 void MainWindow::openBoms(){
   fileName_DATAs = QFileDialog::getOpenFileNames(this, tr("Open Excel File"),"", tr("(*.xlsx *.xls)"));
   if(fileName_DATAs.count() == 0){
@@ -57,14 +53,14 @@ void MainWindow::openBoms(){
     }
 
 }
-
+//------------------------------------------------------------------------
 void MainWindow::clear(){
   ui->label_2->clear();
   ui->textEdit->clear();
   fileName_DATAs.clear();
   fileName_DATA.clear();
 }
-
+//------------------------------------------------------------------------
 void MainWindow::generate(){
 
     ui->progressBar->setValue(0);
@@ -114,9 +110,7 @@ void MainWindow::generate(){
 
 
 }
-
-
-
+//------------------------------------------------------------------------
 listStringInt_t MainWindow::operationSklad(){
     ui->progressBar->setValue(60);
     QCoreApplication::processEvents();
@@ -214,7 +208,7 @@ listStringInt_t MainWindow::operationSklad(){
       return sklad;
 
 }
-
+//------------------------------------------------------------------------
 void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLisrCont){
 
    QString str = ui->textEdit->toPlainText();
@@ -365,9 +359,7 @@ str++;
           mapVarLisr.clear();// очищая предыдущий контейнер
 
 }
-
-
-
+//------------------------------------------------------------------------
 QList<QStringList> MainWindow::operationSearch(QMap<QString, QList<QStringList> > &dataSkladAndSum, listStringInt_t &dataSklad){
   QMap<QString, QList<QStringList> > dataBomOut;
   //Заполняю ключами
@@ -414,12 +406,14 @@ QList<QStringList> MainWindow::operationSearch(QMap<QString, QList<QStringList> 
   foreach (QString key, dataBomOut.keys ()) {
       // по значению ключей
       QStringList keys;
-      keys << "" << key << "" << "";
+      keys << "" << key << "" << "" << "" << "";
       inWord << keys;
       keys.clear();
       for( QList<QStringList>::iterator it = dataBomOut[key].begin(); it < dataBomOut[key].end(); it++){
 
-          keys << (*it).at(0) << (*it).at(1) << (*it).at(2) << QString::number((*it).at(1).toInt() - (*it).at(2).toInt());
+          keys << (*it).at(0) << (*it).at(1) << (*it).at(2) << QString::number((*it).at(1).toInt() - (*it).at(2).toInt())
+               << QString::number( ceil( (*it).at(1).toInt()  + (*it).at(1).toInt()  * 0.2 ) ) // +20% с запроса
+               << QString::number( ceil( (*it).at(1).toInt()  + (*it).at(1).toInt()  * 0.2 - (*it).at(2).toInt() ) );
           inWord << keys;
           keys.clear();
         }
@@ -455,13 +449,13 @@ QList<QStringList> MainWindow::operationSearch(QMap<QString, QList<QStringList> 
             int index = keys.indexOf(b);
             if( index < 0){
                 ( *(var)).clear();
-               (*var) << "" << "Прочие" << "" << "";
+               (*var) << "" << "Прочие" << "" << ""<< "" << "";
                 continue;
             }
             QString str = keys[index];
             QString a = tem[str];
              ( *(var)).clear();
-            (*var) << "" << a << "" << "";
+            (*var) << "" << a << "" << ""<< "" << "";
             int c;
             c++;
         }
@@ -469,28 +463,39 @@ QList<QStringList> MainWindow::operationSearch(QMap<QString, QList<QStringList> 
     return inWord;
 
 }
+//------------------------------------------------------------------------
+void MainWindow::openAbout(){
+  ActiveWord word;
+  if(!word.wordConnect()){
+      QMessageBox msgBox;
+      msgBox.setText("Word не установлен");
+      msgBox.exec();
+      return;
+    }
+ QString path = QApplication::applicationDirPath() + "/Описание.docx";
 
-
-
-
-
-
-
-
-
-
-
-
-
+  //QString path = "D:/projects/gp/PEZ.docx";
+  QAxObject* doc1 = word.documentOpen(path);
+  if(doc1 == NULL){
+      QMessageBox msgBox;
+        msgBox.setText("Описание не найдено");
+        msgBox.exec();
+        word.setVisible();
+    return;
+    }
+   word.setVisible();
+}
+//------------------------------------------------------------------------
 MainWindow::~MainWindow()
 {
   delete ui;
 }
-
-
+//------------------------------------------------------------------------
 void MainWindow::mesOut(QString mes){
        QMessageBox msgBox;
           msgBox.setText(mes);
           msgBox.exec();
 
 }
+
+

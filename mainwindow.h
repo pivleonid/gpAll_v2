@@ -37,6 +37,7 @@ private:
   void openSklad();
   void clear();
   void generate();
+  void openAbout();
   //вспомогательные функции
   //Получение и суммирование всех BOM файлов
  void operationSumRefDez(QMap<QString, QList<QStringList>> & mapVarLisrCont);

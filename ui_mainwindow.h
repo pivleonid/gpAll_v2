@@ -17,6 +17,7 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
@@ -31,6 +32,8 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
+    QAction *actionv1_0;
+    QAction *action;
     QWidget *centralWidget;
     QGridLayout *gridLayout_2;
     QSpacerItem *horizontalSpacer_2;
@@ -47,6 +50,7 @@ public:
     QPushButton *pushButton_3;
     QProgressBar *progressBar;
     QMenuBar *menuBar;
+    QMenu *menu;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -62,6 +66,11 @@ public:
         MainWindow->setSizePolicy(sizePolicy);
         MainWindow->setMinimumSize(QSize(450, 324));
         MainWindow->setMaximumSize(QSize(450, 356));
+        actionv1_0 = new QAction(MainWindow);
+        actionv1_0->setObjectName(QStringLiteral("actionv1_0"));
+        actionv1_0->setEnabled(false);
+        action = new QAction(MainWindow);
+        action->setObjectName(QStringLiteral("action"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout_2 = new QGridLayout(centralWidget);
@@ -139,6 +148,8 @@ public:
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 450, 26));
+        menu = new QMenu(menuBar);
+        menu->setObjectName(QStringLiteral("menu"));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -147,6 +158,10 @@ public:
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
 
+        menuBar->addAction(menu->menuAction());
+        menu->addAction(actionv1_0);
+        menu->addAction(action);
+
         retranslateUi(MainWindow);
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -154,7 +169,9 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", Q_NULLPTR));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "\320\232\320\276\320\274\320\277\320\276\320\275\320\265\320\275\321\202\321\213 \320\264\320\273\321\217 \320\267\320\260\320\272\321\203\320\277\320\276\320\272", Q_NULLPTR));
+        actionv1_0->setText(QApplication::translate("MainWindow", "v1.0", Q_NULLPTR));
+        action->setText(QApplication::translate("MainWindow", "\320\236\320\277\320\270\321\201\320\260\320\275\320\270\320\265", Q_NULLPTR));
         pushButton->setText(QApplication::translate("MainWindow", "\320\222\321\213\320\261\321\200\320\260\321\202\321\214 BOM \321\204\320\260\320\271\320\273\321\213", Q_NULLPTR));
         textEdit->setHtml(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
@@ -168,6 +185,7 @@ public:
         label->setText(QApplication::translate("MainWindow", "\320\237\321\200\320\276\321\206\320\265\321\201\321\201 \320\262\321\213\320\277\320\276\320\273\320\275\320\265\320\275\320\270\321\217", Q_NULLPTR));
         pushButton_3->setText(QApplication::translate("MainWindow", "\320\263\320\265\320\275\320\265\321\200\320\270\321\200\320\276\320\262\320\260\321\202\321\214 \321\201\320\277\320\270\321\201\320\276\320\272\n"
 "\320\277\320\276 partNumber", Q_NULLPTR));
+        menu->setTitle(QApplication::translate("MainWindow", "\320\241\320\277\321\200\320\260\320\262\320\272\320\260", Q_NULLPTR));
     } // retranslateUi
 
 };
