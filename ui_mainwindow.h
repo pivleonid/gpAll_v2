@@ -32,21 +32,20 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-    QGridLayout *gridLayout_3;
-    QGridLayout *gridLayout;
-    QPushButton *pushButton;
-    QPushButton *pushButton_2;
-    QPushButton *pushButton_3;
-    QSpacerItem *verticalSpacer_3;
-    QSpacerItem *verticalSpacer_4;
-    QPushButton *pushButton_4;
     QGridLayout *gridLayout_2;
-    QSpacerItem *verticalSpacer_2;
-    QProgressBar *progressBar;
-    QLabel *label;
-    QLabel *label_2;
-    QSpacerItem *verticalSpacer;
+    QSpacerItem *horizontalSpacer_2;
+    QPushButton *pushButton;
+    QSpacerItem *horizontalSpacer;
     QTextEdit *textEdit;
+    QSpacerItem *horizontalSpacer_3;
+    QPushButton *pushButton_2;
+    QSpacerItem *horizontalSpacer_4;
+    QLabel *label_2;
+    QGridLayout *gridLayout;
+    QPushButton *pushButton_4;
+    QLabel *label;
+    QPushButton *pushButton_3;
+    QProgressBar *progressBar;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -55,97 +54,91 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(809, 324);
+        MainWindow->resize(450, 324);
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
         MainWindow->setSizePolicy(sizePolicy);
-        MainWindow->setMinimumSize(QSize(809, 324));
-        MainWindow->setMaximumSize(QSize(809, 324));
+        MainWindow->setMinimumSize(QSize(450, 324));
+        MainWindow->setMaximumSize(QSize(450, 356));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        gridLayout_3 = new QGridLayout(centralWidget);
-        gridLayout_3->setSpacing(6);
-        gridLayout_3->setContentsMargins(11, 11, 11, 11);
-        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        gridLayout = new QGridLayout();
-        gridLayout->setSpacing(6);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout_2 = new QGridLayout(centralWidget);
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setContentsMargins(11, 11, 11, 11);
+        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        horizontalSpacer_2 = new QSpacerItem(135, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_2->addItem(horizontalSpacer_2, 0, 0, 1, 1);
+
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QStringLiteral("pushButton"));
         pushButton->setEnabled(true);
 
-        gridLayout->addWidget(pushButton, 0, 0, 1, 1);
+        gridLayout_2->addWidget(pushButton, 0, 1, 1, 1);
+
+        horizontalSpacer = new QSpacerItem(135, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_2->addItem(horizontalSpacer, 0, 2, 1, 1);
+
+        textEdit = new QTextEdit(centralWidget);
+        textEdit->setObjectName(QStringLiteral("textEdit"));
+
+        gridLayout_2->addWidget(textEdit, 1, 0, 1, 3);
+
+        horizontalSpacer_3 = new QSpacerItem(135, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_2->addItem(horizontalSpacer_3, 2, 0, 1, 1);
 
         pushButton_2 = new QPushButton(centralWidget);
         pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
 
-        gridLayout->addWidget(pushButton_2, 2, 0, 1, 1);
+        gridLayout_2->addWidget(pushButton_2, 2, 1, 1, 1);
 
-        pushButton_3 = new QPushButton(centralWidget);
-        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+        horizontalSpacer_4 = new QSpacerItem(135, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout->addWidget(pushButton_3, 5, 0, 1, 1);
-
-        verticalSpacer_3 = new QSpacerItem(20, 60, QSizePolicy::Minimum, QSizePolicy::Fixed);
-
-        gridLayout->addItem(verticalSpacer_3, 1, 0, 1, 1);
-
-        verticalSpacer_4 = new QSpacerItem(20, 60, QSizePolicy::Minimum, QSizePolicy::Fixed);
-
-        gridLayout->addItem(verticalSpacer_4, 3, 0, 1, 1);
-
-        pushButton_4 = new QPushButton(centralWidget);
-        pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
-
-        gridLayout->addWidget(pushButton_4, 4, 0, 1, 1);
-
-
-        gridLayout_3->addLayout(gridLayout, 0, 0, 1, 1);
-
-        gridLayout_2 = new QGridLayout();
-        gridLayout_2->setSpacing(6);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Fixed);
-
-        gridLayout_2->addItem(verticalSpacer_2, 1, 0, 1, 1);
-
-        progressBar = new QProgressBar(centralWidget);
-        progressBar->setObjectName(QStringLiteral("progressBar"));
-        progressBar->setValue(24);
-
-        gridLayout_2->addWidget(progressBar, 5, 0, 1, 1);
-
-        label = new QLabel(centralWidget);
-        label->setObjectName(QStringLiteral("label"));
-        label->setAlignment(Qt::AlignCenter);
-
-        gridLayout_2->addWidget(label, 4, 0, 1, 1);
+        gridLayout_2->addItem(horizontalSpacer_4, 2, 2, 1, 1);
 
         label_2 = new QLabel(centralWidget);
         label_2->setObjectName(QStringLiteral("label_2"));
         label_2->setFrameShape(QFrame::WinPanel);
         label_2->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(label_2, 2, 0, 1, 1);
+        gridLayout_2->addWidget(label_2, 3, 0, 1, 3);
 
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Fixed);
+        gridLayout = new QGridLayout();
+        gridLayout->setSpacing(6);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        pushButton_4 = new QPushButton(centralWidget);
+        pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
 
-        gridLayout_2->addItem(verticalSpacer, 3, 0, 1, 1);
+        gridLayout->addWidget(pushButton_4, 0, 0, 1, 1);
 
-        textEdit = new QTextEdit(centralWidget);
-        textEdit->setObjectName(QStringLiteral("textEdit"));
+        label = new QLabel(centralWidget);
+        label->setObjectName(QStringLiteral("label"));
+        label->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(textEdit, 0, 0, 1, 1);
+        gridLayout->addWidget(label, 0, 1, 1, 1);
+
+        pushButton_3 = new QPushButton(centralWidget);
+        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+
+        gridLayout->addWidget(pushButton_3, 1, 0, 1, 1);
+
+        progressBar = new QProgressBar(centralWidget);
+        progressBar->setObjectName(QStringLiteral("progressBar"));
+        progressBar->setValue(24);
+
+        gridLayout->addWidget(progressBar, 1, 1, 1, 1);
 
 
-        gridLayout_3->addLayout(gridLayout_2, 0, 1, 1, 1);
+        gridLayout_2->addLayout(gridLayout, 4, 0, 1, 3);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 809, 26));
+        menuBar->setGeometry(QRect(0, 0, 450, 26));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -163,12 +156,18 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", Q_NULLPTR));
         pushButton->setText(QApplication::translate("MainWindow", "\320\222\321\213\320\261\321\200\320\260\321\202\321\214 BOM \321\204\320\260\320\271\320\273\321\213", Q_NULLPTR));
+        textEdit->setHtml(QApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">D:/projects/gpAll/PHASE_FPGA_MAIN_01_REFDES - \320\272\320\276\320\277\320\270\321\217.xlsx    -    1</span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">D:/projects/gpAll/PHASE_FPGA_MAIN_01_REFDES.xlsx    -    1</span></p></body></html>", Q_NULLPTR));
         pushButton_2->setText(QApplication::translate("MainWindow", "\320\222\321\213\320\261\321\200\320\260\321\202\321\214 \321\204\320\260\320\271\320\273 \321\201\320\272\320\273\320\260\320\264\320\260", Q_NULLPTR));
-        pushButton_3->setText(QApplication::translate("MainWindow", "\320\263\320\265\320\275\320\265\321\200\320\270\321\200\320\276\320\262\320\260\321\202\321\214 \321\201\320\277\320\270\321\201\320\276\320\272\n"
-"\320\277\320\276 partNumber", Q_NULLPTR));
+        label_2->setText(QApplication::translate("MainWindow", "D:/projects/gpAll/\321\201\320\272\320\273\320\260\320\264 03.10.17xlsx", Q_NULLPTR));
         pushButton_4->setText(QApplication::translate("MainWindow", "\320\236\321\207\320\270\321\201\321\202\320\270\321\202\321\214", Q_NULLPTR));
         label->setText(QApplication::translate("MainWindow", "\320\237\321\200\320\276\321\206\320\265\321\201\321\201 \320\262\321\213\320\277\320\276\320\273\320\275\320\265\320\275\320\270\321\217", Q_NULLPTR));
-        label_2->setText(QString());
+        pushButton_3->setText(QApplication::translate("MainWindow", "\320\263\320\265\320\275\320\265\321\200\320\270\321\200\320\276\320\262\320\260\321\202\321\214 \321\201\320\277\320\270\321\201\320\276\320\272\n"
+"\320\277\320\276 partNumber", Q_NULLPTR));
     } // retranslateUi
 
 };

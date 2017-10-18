@@ -67,45 +67,50 @@ void MainWindow::clear(){
 
 void MainWindow::generate(){
 
+    ui->progressBar->setValue(0);
+    QCoreApplication::processEvents();
     ActiveWord word;
-      if(!word.wordConnect()){
-          QMessageBox msgBox;
-          msgBox.setText("Word не установлен");
-          msgBox.exec();
-          return;
-        }
-     QString path = QApplication::applicationDirPath() + "/test.docx";
-      QAxObject* doc = word.documentOpen(path);
-      if(doc == NULL){
-          QMessageBox msgBox;
-            msgBox.setText("Не найден word- шаблон");
-            msgBox.exec();
+    if(!word.wordConnect()){
+        QMessageBox msgBox;
+        msgBox.setText("Word не установлен");
+        msgBox.exec();
         return;
-        }
-
-  listStringInt_t dataSklad;
-  dataSklad = operationSklad();
-  QMap<QString, QList<QStringList> > dataBom, dataBomOut;
-  operationSumRefDez(dataBom);
-  QList<QStringList> datInWord;
-  datInWord = operationSearch(dataBom, dataSklad);
-
-  QString dt = QDateTime::currentDateTime().toString();
-  word.findReplaseLabel("[Dat]" , dt, false);
-
-
-  //заполнение таблицы
-  QStringList listLabel = word.tableGetLabels(1, 3);
-  ui->progressBar->setValue(70);
-  QCoreApplication::processEvents();
-  if (word.tableFill(datInWord,listLabel,1,3) < 0){
-      mesOut("Ошибка заполнения таблицы!");
-      word.setVisible();
-      return;
     }
-  word.setVisible();
-  int u;
-  u++;
+    QString path = QApplication::applicationDirPath() + "/test.docx";
+    QAxObject* doc = word.documentOpen(path);
+    if(doc == NULL){
+        QMessageBox msgBox;
+        msgBox.setText("Не найден word- шаблон");
+        msgBox.exec();
+        return;
+    }
+
+
+    QMap<QString, QList<QStringList> > dataBom, dataBomOut;
+    operationSumRefDez(dataBom);
+    listStringInt_t dataSklad;
+    dataSklad = operationSklad();
+    QList<QStringList> datInWord;
+    datInWord = operationSearch(dataBom, dataSklad);
+
+    QString dt = QDateTime::currentDateTime().toString();
+    word.findReplaseLabel("[Dat]" , dt, false);
+
+
+    //заполнение таблицы
+    QStringList listLabel = word.tableGetLabels(1, 3);
+    ui->progressBar->setValue(80);
+    QCoreApplication::processEvents();
+    if (word.tableFill(datInWord,listLabel,1,3) < 0){
+        mesOut("Ошибка заполнения таблицы!");
+        word.setVisible();
+        return;
+    }
+    ui->progressBar->setValue(100);
+    QCoreApplication::processEvents();
+    word.setVisible();
+    int u;
+    u++;
 
 
 }
@@ -113,6 +118,8 @@ void MainWindow::generate(){
 
 
 listStringInt_t MainWindow::operationSklad(){
+    ui->progressBar->setValue(60);
+    QCoreApplication::processEvents();
   listStringInt_t errMes;
   list_t list{"", 0};
   errMes.append(list);
@@ -202,6 +209,8 @@ listStringInt_t MainWindow::operationSklad(){
 
     }
       excel.documentClose(ex1);
+      ui->progressBar->setValue(70);
+      QCoreApplication::processEvents();
       return sklad;
 
 }
@@ -214,8 +223,15 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
     foreach (auto var, strList1) {
          strList.append(var.split("    -    "));
     }
-    //последний почему то пусто- очищаю
-    strList.removeLast();
+    //последний иногда почему- то пустой- очищаю
+    if( strList.at(strList.count() - 1) == ""){
+        qDebug() << "WFT?";
+        strList.removeLast();
+    }
+
+
+    int proc = 50/(strList.count() - 1) ;
+
 
   ActiveExcel excel;
   if(!excel.excelConnect()){
@@ -227,6 +243,7 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
   for (QStringList::iterator str = strList.begin(); str < strList.end(); str++) {
 
       QAxObject* ex1 = excel.documentOpen(QVariant(*str));
+      qDebug() << *str;
       if(ex1 == NULL)
         mesOut("Невозможно открыть BOM:\n" + *str
                +"\nПроверте возможность редактирования");
@@ -239,9 +256,7 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
       QStringList varPerem, varPeremNew;
       QVariant data;
       // 20 секунд на чтение
-        str++;
-        QString s = *str;
-      ui->progressBar->setValue(0);
+
       ///ЧТЕНИЕ ДАННЫХ!!!
       for(int i = 2;  ; i++){
           if (excel.sheetCellInsert(sheet, data, i, 2))
@@ -262,12 +277,19 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
                  break;
 
         }
-      int num = (*str++).toInt(); //хранится кол-во элементов
+str++;
+      qDebug() << *str;
+      int num = (*(str)).toInt(); //хранится кол-во элементов
+
 
       for(int i = 0; i < num; i++)
           varPeremNew += varPerem;
       var << varPeremNew;
       excel.documentClose(ex1);
+
+      ui->progressBar->setValue(proc);
+      QCoreApplication::processEvents();
+      proc += proc;
     }
 //--начало формирования Всех префиксов
   QStringList Prefix, allPrefix;
@@ -408,7 +430,7 @@ QList<QStringList> MainWindow::operationSearch(QMap<QString, QList<QStringList> 
   dataSkladAndSum = dataBomOut;
 
 
-  //
+  //замена меток. [C] - конденсаторы.
     QString  str;
     QFile file("Названия групп.txt");
     QTextCodec *codec = QTextCodec::codecForName("CP1251");
