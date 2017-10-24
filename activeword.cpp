@@ -429,6 +429,7 @@ int ActiveWord::tableFill(QList<QStringList> tableDat_in, QStringList tableLabel
             if( sel == NULL)
               return -5;
             sel->dynamicCall("Cut()");
+            sel->dynamicCall("TypeText(Text)", tableDat_in[i-1][containerIndex[j-1]]);
             delete sel;
             delete cell;
             continue;

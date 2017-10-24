@@ -44,19 +44,42 @@ void MainWindow::openBoms(){
       return;
     }
 
-  bool ok;
-  int num = QInputDialog::getInt(0, "Внимание!", "Введите количество образцов", 0 , 1, 100, 1, &ok);
-  if(!ok)
-      return;
+
   foreach (auto var, fileName_DATAs) {
-      ui->textEdit->insertPlainText(var + "    -    "+ QString::number(num) +"\n");
-    }
+      int rowCont = ui->tableWidget->rowCount();
+      ui->tableWidget->insertRow(rowCont);// вставка строки
+      QTableWidgetItem* item = new QTableWidgetItem(); // выделяем память под ячейку
+      item->setText(var); // вставляем текст
+      ui->tableWidget->setItem(rowCont, 0, item); // вставляем ячейку
+      QCoreApplication::processEvents();
+      QTableWidgetItem* item1 = new QTableWidgetItem();
+      item1->setText("1");
+      ui->tableWidget->setItem(rowCont, 1, item1);
+      QCoreApplication::processEvents();
+       QTableWidgetItem* item2 = new QTableWidgetItem();
+      item2->setText("20");
+      ui->tableWidget->setItem(rowCont, 2, item2);
+      rowCont++;
+  }
+  // Ресайзим колонки по содержимому
+      ui->tableWidget->resizeColumnsToContents();
+
+ //
+//  bool ok;
+//  int num = QInputDialog::getInt(0, "Внимание!", "Введите количество образцов", 0 , 1, 100, 1, &ok);
+//  if(!ok)
+//      return;
+//  foreach (auto var, fileName_DATAs) {
+//      //ui->textEdit->insertPlainText(var + "    -    "+ QString::number(num) +"\n");
+//    }
 
 }
 //------------------------------------------------------------------------
 void MainWindow::clear(){
   ui->label_2->clear();
-  ui->textEdit->clear();
+
+  for(int i = ui->tableWidget->rowCount(); i >= 0; i--)
+      ui->tableWidget->removeRow(i);
   fileName_DATAs.clear();
   fileName_DATA.clear();
 }
@@ -211,7 +234,7 @@ listStringInt_t MainWindow::operationSklad(){
 //------------------------------------------------------------------------
 void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLisrCont){
 
-   QString str = ui->textEdit->toPlainText();
+   QString str;// = ui->textEdit->toPlainText();
     QStringList strList1 = str.split('\n');
     QStringList strList;
     foreach (auto var, strList1) {
