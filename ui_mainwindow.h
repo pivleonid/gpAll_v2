@@ -148,6 +148,20 @@ public:
         tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
         QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
         tableWidget->setHorizontalHeaderItem(2, __qtablewidgetitem2);
+        if (tableWidget->rowCount() < 2)
+            tableWidget->setRowCount(2);
+        QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
+        tableWidget->setItem(0, 0, __qtablewidgetitem3);
+        QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
+        tableWidget->setItem(0, 1, __qtablewidgetitem4);
+        QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
+        tableWidget->setItem(0, 2, __qtablewidgetitem5);
+        QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
+        tableWidget->setItem(1, 0, __qtablewidgetitem6);
+        QTableWidgetItem *__qtablewidgetitem7 = new QTableWidgetItem();
+        tableWidget->setItem(1, 1, __qtablewidgetitem7);
+        QTableWidgetItem *__qtablewidgetitem8 = new QTableWidgetItem();
+        tableWidget->setItem(1, 2, __qtablewidgetitem8);
         tableWidget->setObjectName(QStringLiteral("tableWidget"));
         QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(0);
@@ -163,7 +177,7 @@ public:
         tableWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
         tableWidget->setAutoScroll(false);
         tableWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
-        tableWidget->setRowCount(0);
+        tableWidget->setRowCount(2);
         tableWidget->setColumnCount(3);
         tableWidget->horizontalHeader()->setVisible(true);
         tableWidget->verticalHeader()->setVisible(true);
@@ -213,6 +227,23 @@ public:
         ___qtablewidgetitem1->setText(QApplication::translate("MainWindow", "\320\232\320\276\320\273-\320\262\320\276", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
         ___qtablewidgetitem2->setText(QApplication::translate("MainWindow", "%", Q_NULLPTR));
+
+        const bool __sortingEnabled = tableWidget->isSortingEnabled();
+        tableWidget->setSortingEnabled(false);
+        QTableWidgetItem *___qtablewidgetitem3 = tableWidget->item(0, 0);
+        ___qtablewidgetitem3->setText(QApplication::translate("MainWindow", "D:/projects/gpAll/PHASE_FPGA_MAIN_01_REFDES - \320\272\320\276\320\277\320\270\321\217.xlsx", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem4 = tableWidget->item(0, 1);
+        ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "1", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem5 = tableWidget->item(0, 2);
+        ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "10", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem6 = tableWidget->item(1, 0);
+        ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "D:/projects/gpAll/PHASE_FPGA_MAIN_01_REFDES.xlsx", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem7 = tableWidget->item(1, 1);
+        ___qtablewidgetitem7->setText(QApplication::translate("MainWindow", "2", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem8 = tableWidget->item(1, 2);
+        ___qtablewidgetitem8->setText(QApplication::translate("MainWindow", "20", Q_NULLPTR));
+        tableWidget->setSortingEnabled(__sortingEnabled);
+
         menu->setTitle(QApplication::translate("MainWindow", "\320\241\320\277\321\200\320\260\320\262\320\272\320\260", Q_NULLPTR));
     } // retranslateUi
 
