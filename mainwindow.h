@@ -40,6 +40,8 @@ private:
   void openAbout();
   //вспомогательные функции
   //Получение и суммирование всех BOM файлов
+  //                    [key] - [эл-т1][кол-во][%]
+  //                            [эл-т2][кол-во][%]
  void operationSumRefDez(QMap<QString, QList<QStringList>> & mapVarLisrCont);
   //Получение данных со склада
   listStringInt_t operationSklad();

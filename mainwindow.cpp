@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->action,SIGNAL(triggered(bool)), this, SLOT(openAbout()));
 
    ui->progressBar->setValue(0);
-
+    ui->tableWidget->setColumnWidth(0, 550);
 
 }
 //------------------------------------------------------------------------
@@ -62,7 +62,7 @@ void MainWindow::openBoms(){
       rowCont++;
   }
   // Ресайзим колонки по содержимому
-      ui->tableWidget->resizeColumnsToContents();
+//      ui->tableWidget->resizeColumnsToContents();
 
 
 
@@ -74,6 +74,7 @@ void MainWindow::clear(){
       ui->tableWidget->removeRow(i);
   fileName_DATAs.clear();
   fileName_DATA.clear();
+  ui->progressBar->setValue(0);
 }
 //------------------------------------------------------------------------
 void MainWindow::generate(){
@@ -315,48 +316,139 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
     //--Конец формирования Всех префиксов
 
     //Формирование QMAP
-    QMap<QString, QList<QStringList> > mapVarLisr;
-    foreach (auto it, allPrefix) {
-        for(int i = 0; i < peremTabl.count(); i = i + 2){
+    QMap<QString, QStringList > mapVarLisrBegin;
+    QMap<QString, QList<QStringList> > mapVarLisrEnd;
+    foreach (QString key, allPrefix) {
+        mapVarLisrEnd[key];
+        mapVarLisrBegin[key];
+    }
+
+    for(int i = 0; i < peremTabl.count(); i = i + 2){
+        mapVarLisrBegin.clear();
+        foreach (auto it, allPrefix) {
+
             for (QStringList::iterator it1 = peremTabl[i].begin();it1 < peremTabl[i].end(); it1++) {
                 QString name = *it1;
                 name = name.remove(QRegExp("[^A-Za-zА-Яа-я]"));
-                if( it == name)
-                    peremTabl[it][i].append (*(it1 + 1));
+                if( it == name){
+                    mapVarLisrBegin[it].append (*(it1 + 1));
+                }
                 it1++;// т.к. след. значение через 1
             }
         }
+        //Добавить к контейнеру хотелки Бориса
+
+        foreach (QString key, mapVarLisrBegin.keys()) {
+            //пробегаюсь по значению ключа
+            QStringList ver;
+            for( QStringList::iterator it = mapVarLisrBegin[key].begin(); it < mapVarLisrBegin[key].end(); it++){
+                ver <<  *it;
+        }
+            mapVarLisrEnd[key] << ver;
+            ver.clear();
+            ver = peremTabl[i+1];
+            mapVarLisrEnd[key] << ver;
+            ver.clear();
+
+        }
     }
-    //Сортировака QMAP--заполнение ключами
-    // Вид mapVarLisrCont - [C] -> [partNumber][кол-во элементов]
-    //    -> [partNumber][кол-во элементов]
-    // QMap<QString, QList<QStringList> > mapVarLisrCont;
-    //копирую ключи
-    foreach (QString key, mapVarLisr.keys ()) {
-        mapVarLisrCont[key];
-    }
+    //--mapVarListEnd - [key] = [0] - что за элемент - хранит qstringlist эл-тов
+    //                          [1] - [0] - кол-во в BOM 1
+    //                          [1] - [1] - %
+    //                          [2] - что за элемент- хранит qstringlist эл-тов
+    //                          [1] - [0] - кол-во в BOM 2
+    //                          [1] - [1] - %
+    // и т.д.
+ //-------------------------------------------------------------------------------------------
+
+  QMap<QString, QList<QStringList> > mapVarLisrCont1, mapVarLisrCont2; //выходная переменная из этого алгоритма
     bool flag = true;
-    //---Сортировака QMAP
-    //пробегаюсь по всем ключам
-    foreach (QString key, mapVarLisr.keys ()) {
-        //пробегаюсь по значению ключа
-        for( QStringList::iterator it = mapVarLisr[key].begin(); it < mapVarLisr[key].end(); it++){
-            //Первый влет- по ключу запиывается первый элемент
-            if(it == mapVarLisr[key].begin()){
-                QStringList peremen;
-                peremen << *it << "1";
-                mapVarLisrCont[key].append (peremen);
+    foreach (QString key, mapVarLisrEnd.keys ()) {
+        mapVarLisrCont1[key];
+         mapVarLisrCont2[key];
+    }
+    foreach (QString key, mapVarLisrEnd.keys()) {
+        int contIntKey = mapVarLisrEnd[key].count();
+        for(int i = 0; i <contIntKey;i = i+2){
+            QStringList varK;
+            QList <QStringList> varKN;
+            for( QStringList::iterator it = mapVarLisrEnd[key][i].begin(); it <mapVarLisrEnd[key][i].end(); it++){
+
+                varK << *it;
+            }
+            for (QStringList::iterator it = varK.begin(); it < varK.end(); it++) {
+                //  Первый влет- по ключу запиывается первый элемент
+                if(it == varK.begin()){
+                    QStringList peremen;
+                    peremen << *it << "1";
+                    varKN.append (peremen);
+                    it++;
+                    continue;
+                }
+                QString a = (*it); // для отладки
+                flag = true;
+                //Если по такому ключу и с таким partnumber содержится элемент- кол-во + 1
+                for (QList<QStringList>::iterator var = varKN.begin();var < varKN.end(); var++)
+                {
+                    if( (*var).at(0) == a ){
+                        int number = (*var).at(1).toInt();
+                        ++number;
+                        (*var)[1] = QString::number(number);
+                        flag = false;
+                        break;
+                    }
+
+                }
+                //если элемент уже был найден- смотрю следующее значение
+                //если не был найден -  вношу этот элемент
+                if(flag == true){
+                    QStringList peremen;
+                    peremen << *it << "1";
+                    varKN.append (peremen);
+                    it++;
+                    continue;
+                }
+            }
+
+            int sumBOM = mapVarLisrEnd[key][i+1][0].toInt();
+            int percent = mapVarLisrEnd[key][i+1][1].toInt();
+            for (QList<QStringList>::iterator var = varKN.begin();var < varKN.end(); var++)
+            {
+
+                int number = (*var).at(1).toInt();
+                number = number * sumBOM;
+                (*var)[1] = QString::number(number);
+                double num = ceil( (number * percent)/100 );
+                number = number + num;
+                (*var).append(QString::number(number));
+            }
+             mapVarLisrCont1[key] << varKN;
+
+        }//закрывает цикл for(int i = 0; i <contIntKey;i = i+2)
+    }
+    // mapVarLisrCont1 == [key] - [эл-т1][кол-во][%]
+    //                            [эл-т2][кол-во][%]
+    //--Просуммирую одинаковые элементы
+
+    foreach (QString key, mapVarLisrCont1.keys()) {
+        for (QList<QStringList>::iterator it = mapVarLisrCont1[key].begin(); it < mapVarLisrCont1[key].end(); it++) {
+            //  Первый влет- по ключу запиывается первый элемент
+            if(it == mapVarLisrCont1[key].begin()){
+                mapVarLisrCont2[key].append (*it);
+               // it++;
                 continue;
             }
-            QString a = (*it); // для отладки
+            QString a = (*it).at(0); // для отладки
             flag = true;
-            //Если по такому ключу и с таким partnumber содержится элемент- кол-во + 1
-            for (QList<QStringList>::iterator var = mapVarLisrCont[key].begin(); var < mapVarLisrCont[key].end(); var++) {
-                QString z =   (*var).at(0);
+            //Если по такому ключу и с таким partnumber содержится элемент
+            for (QList<QStringList>::iterator var =   mapVarLisrCont2[key].begin();var <   mapVarLisrCont2[key].end(); var++)
+            {
                 if( (*var).at(0) == a ){
-                    int number = (*var).at(1).toInt();
-                    ++number;
+                    int number = (*it).at(1).toInt() + (*var).at(1).toInt();
+                    int percent = (*it).at(2).toInt() + (*var).at(2).toInt();
+
                     (*var)[1] = QString::number(number);
+                    (*var)[2] = QString::number(percent);
                     flag = false;
                     break;
                 }
@@ -365,14 +457,14 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
             //если элемент уже был найден- смотрю следующее значение
             //если не был найден -  вношу этот элемент
             if(flag == true){
-                QStringList peremen;
-                peremen << *it << "1";
-                mapVarLisrCont[key].append (peremen);
+                mapVarLisrCont2[key].append (*it);
+                //it++;
                 continue;
             }
         }
     }
-    mapVarLisr.clear();// очищая предыдущий контейнер
+
+mapVarLisrCont = mapVarLisrCont2;
 
 }
 //------------------------------------------------------------------------
@@ -410,26 +502,49 @@ QList<QStringList> MainWindow::operationSearch(QMap<QString, QList<QStringList> 
           }
           //на складе  элемент не найден
           QStringList peremen;
-          peremen << *it << QString::number(1);
+          peremen << *it << QString::number(0);
           dataBomOut[key].append (peremen);
 
          }
     }
-
+  //    dataBomOut == [key] - [эл-т1][кол-во][%][кол-во на складе]
+  //                          [эл-т2][кол-во][%][кол-во на складе]
   //формирование выходного файла
   QList<QStringList> inWord;
   // по ключам
   foreach (QString key, dataBomOut.keys ()) {
       // по значению ключей
       QStringList keys;
-      keys << "" << key << "" << "" << "" << "";
+      keys << "" << key << "" << ""  << "" << "" << "" << "";
       inWord << keys;
       keys.clear();
       for( QList<QStringList>::iterator it = dataBomOut[key].begin(); it < dataBomOut[key].end(); it++){
-
-          keys << (*it).at(0) << (*it).at(1) << (*it).at(2) << QString::number((*it).at(1).toInt() - (*it).at(2).toInt())
-               << QString::number( ceil( (*it).at(1).toInt()  + (*it).at(1).toInt()  * 0.2 ) ) // +20% с запроса
-               << QString::number( ceil( (*it).at(1).toInt()  + (*it).at(1).toInt()  * 0.2 - (*it).at(2).toInt() ) );
+                  //partNumber   //кол-во в BOM   //+%          //на складе
+          int numBoms = (*it).at(1).toInt();
+          int percent = (*it).at(2).toInt();
+          int skladD = (*it).at(3).toInt();
+          int res = skladD - numBoms;
+          int resPercent = skladD - percent;
+          QString zakyp, zakypPer, ost, ostPer;
+          if(res < 0){
+              zakyp = QString::number( abs(res) );
+              ost = QString::number(0);
+          }
+          if(res > 0){
+              zakyp = "-";
+              ost = QString::number(res);
+          }
+          if(resPercent < 0){
+              zakypPer = QString::number( abs(resPercent) );
+              ostPer = QString::number(0);
+          }
+          if(resPercent > 0){
+              zakypPer = "-";
+              ostPer = QString::number(resPercent);
+          }
+          keys << (*it).at(0) << (*it).at(1) << (*it).at(2) << (*it).at(3)
+                  //закупить
+               << zakyp << ost << zakypPer << ostPer;
           inWord << keys;
           keys.clear();
         }
@@ -465,13 +580,13 @@ QList<QStringList> MainWindow::operationSearch(QMap<QString, QList<QStringList> 
             int index = keys.indexOf(b);
             if( index < 0){
                 ( *(var)).clear();
-               (*var) << "" << "Прочие" << "" << ""<< "" << "";
+               (*var) << "" << "Прочие" << "" << ""<< "" << "" << "" << "";
                 continue;
             }
             QString str = keys[index];
             QString a = tem[str];
              ( *(var)).clear();
-            (*var) << "" << a << "" << ""<< "" << "";
+            (*var) << "" << a << "" << ""<< "" << "" << "" << "";
             int c;
             c++;
         }

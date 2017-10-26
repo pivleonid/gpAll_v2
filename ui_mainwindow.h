@@ -40,15 +40,16 @@ public:
     QSpacerItem *horizontalSpacer_2;
     QLabel *label_2;
     QSpacerItem *horizontalSpacer;
-    QSpacerItem *horizontalSpacer_3;
-    QPushButton *pushButton_2;
-    QSpacerItem *horizontalSpacer_4;
+    QTableWidget *tableWidget;
     QGridLayout *gridLayout;
     QPushButton *pushButton_4;
     QLabel *label;
     QPushButton *pushButton_3;
     QProgressBar *progressBar;
-    QTableWidget *tableWidget;
+    QSpacerItem *horizontalSpacer_3;
+    QPushButton *pushButton_2;
+    QSpacerItem *horizontalSpacer_4;
+    QSpacerItem *verticalSpacer;
     QMenuBar *menuBar;
     QMenu *menu;
     QToolBar *mainToolBar;
@@ -58,14 +59,14 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(500, 500);
+        MainWindow->resize(700, 500);
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
         MainWindow->setSizePolicy(sizePolicy);
-        MainWindow->setMinimumSize(QSize(500, 500));
-        MainWindow->setMaximumSize(QSize(500, 500));
+        MainWindow->setMinimumSize(QSize(700, 500));
+        MainWindow->setMaximumSize(QSize(700, 500));
         actionv1_0 = new QAction(MainWindow);
         actionv1_0->setObjectName(QStringLiteral("actionv1_0"));
         actionv1_0->setEnabled(false);
@@ -92,24 +93,47 @@ public:
         label_2->setFrameShape(QFrame::WinPanel);
         label_2->setAlignment(Qt::AlignCenter);
 
-        gridLayout_2->addWidget(label_2, 3, 0, 1, 3);
+        gridLayout_2->addWidget(label_2, 4, 0, 1, 3);
 
         horizontalSpacer = new QSpacerItem(135, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         gridLayout_2->addItem(horizontalSpacer, 0, 2, 1, 1);
 
-        horizontalSpacer_3 = new QSpacerItem(135, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        tableWidget = new QTableWidget(centralWidget);
+        if (tableWidget->columnCount() < 3)
+            tableWidget->setColumnCount(3);
+        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem);
+        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
+        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(2, __qtablewidgetitem2);
+        tableWidget->setObjectName(QStringLiteral("tableWidget"));
+        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(tableWidget->sizePolicy().hasHeightForWidth());
+        tableWidget->setSizePolicy(sizePolicy1);
+        QFont font;
+        font.setPointSize(8);
+        font.setStyleStrategy(QFont::PreferAntialias);
+        tableWidget->setFont(font);
+        tableWidget->setFocusPolicy(Qt::StrongFocus);
+        tableWidget->setMidLineWidth(0);
+        tableWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+        tableWidget->setAutoScroll(false);
+        tableWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
+        tableWidget->setRowCount(0);
+        tableWidget->setColumnCount(3);
+        tableWidget->horizontalHeader()->setVisible(true);
+        tableWidget->horizontalHeader()->setDefaultSectionSize(60);
+        tableWidget->horizontalHeader()->setMinimumSectionSize(60);
+        tableWidget->horizontalHeader()->setStretchLastSection(true);
+        tableWidget->verticalHeader()->setVisible(false);
+        tableWidget->verticalHeader()->setMinimumSectionSize(50);
+        tableWidget->verticalHeader()->setStretchLastSection(true);
 
-        gridLayout_2->addItem(horizontalSpacer_3, 2, 0, 1, 1);
-
-        pushButton_2 = new QPushButton(centralWidget);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
-
-        gridLayout_2->addWidget(pushButton_2, 2, 1, 1, 1);
-
-        horizontalSpacer_4 = new QSpacerItem(135, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        gridLayout_2->addItem(horizontalSpacer_4, 2, 2, 1, 1);
+        gridLayout_2->addWidget(tableWidget, 1, 0, 1, 3);
 
         gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
@@ -137,59 +161,29 @@ public:
         gridLayout->addWidget(progressBar, 1, 1, 1, 1);
 
 
-        gridLayout_2->addLayout(gridLayout, 4, 0, 1, 3);
+        gridLayout_2->addLayout(gridLayout, 5, 0, 1, 3);
 
-        tableWidget = new QTableWidget(centralWidget);
-        if (tableWidget->columnCount() < 3)
-            tableWidget->setColumnCount(3);
-        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem);
-        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
-        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(2, __qtablewidgetitem2);
-        if (tableWidget->rowCount() < 2)
-            tableWidget->setRowCount(2);
-        QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
-        tableWidget->setItem(0, 0, __qtablewidgetitem3);
-        QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
-        tableWidget->setItem(0, 1, __qtablewidgetitem4);
-        QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
-        tableWidget->setItem(0, 2, __qtablewidgetitem5);
-        QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
-        tableWidget->setItem(1, 0, __qtablewidgetitem6);
-        QTableWidgetItem *__qtablewidgetitem7 = new QTableWidgetItem();
-        tableWidget->setItem(1, 1, __qtablewidgetitem7);
-        QTableWidgetItem *__qtablewidgetitem8 = new QTableWidgetItem();
-        tableWidget->setItem(1, 2, __qtablewidgetitem8);
-        tableWidget->setObjectName(QStringLiteral("tableWidget"));
-        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(tableWidget->sizePolicy().hasHeightForWidth());
-        tableWidget->setSizePolicy(sizePolicy1);
-        QFont font;
-        font.setPointSize(8);
-        font.setStyleStrategy(QFont::PreferAntialias);
-        tableWidget->setFont(font);
-        tableWidget->setFocusPolicy(Qt::StrongFocus);
-        tableWidget->setMidLineWidth(0);
-        tableWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-        tableWidget->setAutoScroll(false);
-        tableWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
-        tableWidget->setRowCount(2);
-        tableWidget->setColumnCount(3);
-        tableWidget->horizontalHeader()->setVisible(true);
-        tableWidget->verticalHeader()->setVisible(true);
-        tableWidget->verticalHeader()->setMinimumSectionSize(50);
-        tableWidget->verticalHeader()->setStretchLastSection(true);
+        horizontalSpacer_3 = new QSpacerItem(135, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout_2->addWidget(tableWidget, 1, 0, 1, 3);
+        gridLayout_2->addItem(horizontalSpacer_3, 3, 0, 1, 1);
+
+        pushButton_2 = new QPushButton(centralWidget);
+        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
+
+        gridLayout_2->addWidget(pushButton_2, 3, 1, 1, 1);
+
+        horizontalSpacer_4 = new QSpacerItem(135, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout_2->addItem(horizontalSpacer_4, 3, 2, 1, 1);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout_2->addItem(verticalSpacer, 2, 1, 1, 1);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 500, 26));
+        menuBar->setGeometry(QRect(0, 0, 700, 26));
         menu = new QMenu(menuBar);
         menu->setObjectName(QStringLiteral("menu"));
         MainWindow->setMenuBar(menuBar);
@@ -211,39 +205,22 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "\320\232\320\276\320\274\320\277\320\276\320\275\320\265\320\275\321\202\321\213 \320\264\320\273\321\217 \320\267\320\260\320\272\321\203\320\277\320\276\320\272", Q_NULLPTR));
-        actionv1_0->setText(QApplication::translate("MainWindow", "v1.0", Q_NULLPTR));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "\320\232\320\276\320\274\320\277\320\276\320\275\320\265\320\275\321\202\321\213 \320\264\320\273\321\217 \320\267\320\260\320\272\321\203\320\277\320\276\320\272 v.2.0.0.0 \320\276\321\202 26.10.2017", Q_NULLPTR));
+        actionv1_0->setText(QApplication::translate("MainWindow", "v2.0.0.0", Q_NULLPTR));
         action->setText(QApplication::translate("MainWindow", "\320\236\320\277\320\270\321\201\320\260\320\275\320\270\320\265", Q_NULLPTR));
         pushButton->setText(QApplication::translate("MainWindow", "\320\222\321\213\320\261\321\200\320\260\321\202\321\214 BOM \321\204\320\260\320\271\320\273\321\213", Q_NULLPTR));
         label_2->setText(QString());
-        pushButton_2->setText(QApplication::translate("MainWindow", "\320\222\321\213\320\261\321\200\320\260\321\202\321\214 \321\204\320\260\320\271\320\273 \321\201\320\272\320\273\320\260\320\264\320\260", Q_NULLPTR));
-        pushButton_4->setText(QApplication::translate("MainWindow", "\320\236\321\207\320\270\321\201\321\202\320\270\321\202\321\214", Q_NULLPTR));
-        label->setText(QApplication::translate("MainWindow", "\320\237\321\200\320\276\321\206\320\265\321\201\321\201 \320\262\321\213\320\277\320\276\320\273\320\275\320\265\320\275\320\270\321\217", Q_NULLPTR));
-        pushButton_3->setText(QApplication::translate("MainWindow", "\320\263\320\265\320\275\320\265\321\200\320\270\321\200\320\276\320\262\320\260\321\202\321\214 \321\201\320\277\320\270\321\201\320\276\320\272\n"
-"\320\277\320\276 partNumber", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("MainWindow", "BOM \321\204\320\260\320\271\320\273\321\213", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
         ___qtablewidgetitem1->setText(QApplication::translate("MainWindow", "\320\232\320\276\320\273-\320\262\320\276", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
         ___qtablewidgetitem2->setText(QApplication::translate("MainWindow", "%", Q_NULLPTR));
-
-        const bool __sortingEnabled = tableWidget->isSortingEnabled();
-        tableWidget->setSortingEnabled(false);
-        QTableWidgetItem *___qtablewidgetitem3 = tableWidget->item(0, 0);
-        ___qtablewidgetitem3->setText(QApplication::translate("MainWindow", "D:/projects/gpAll/PHASE_FPGA_MAIN_01_REFDES - \320\272\320\276\320\277\320\270\321\217.xlsx", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem4 = tableWidget->item(0, 1);
-        ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "1", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem5 = tableWidget->item(0, 2);
-        ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "10", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem6 = tableWidget->item(1, 0);
-        ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "D:/projects/gpAll/PHASE_FPGA_MAIN_01_REFDES.xlsx", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem7 = tableWidget->item(1, 1);
-        ___qtablewidgetitem7->setText(QApplication::translate("MainWindow", "2", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem8 = tableWidget->item(1, 2);
-        ___qtablewidgetitem8->setText(QApplication::translate("MainWindow", "20", Q_NULLPTR));
-        tableWidget->setSortingEnabled(__sortingEnabled);
-
+        pushButton_4->setText(QApplication::translate("MainWindow", "\320\236\321\207\320\270\321\201\321\202\320\270\321\202\321\214", Q_NULLPTR));
+        label->setText(QApplication::translate("MainWindow", "\320\237\321\200\320\276\321\206\320\265\321\201\321\201 \320\262\321\213\320\277\320\276\320\273\320\275\320\265\320\275\320\270\321\217", Q_NULLPTR));
+        pushButton_3->setText(QApplication::translate("MainWindow", "\320\263\320\265\320\275\320\265\321\200\320\270\321\200\320\276\320\262\320\260\321\202\321\214 \321\201\320\277\320\270\321\201\320\276\320\272\n"
+"\320\277\320\276 partNumber", Q_NULLPTR));
+        pushButton_2->setText(QApplication::translate("MainWindow", "\320\222\321\213\320\261\321\200\320\260\321\202\321\214 \321\204\320\260\320\271\320\273 \321\201\320\272\320\273\320\260\320\264\320\260", Q_NULLPTR));
         menu->setTitle(QApplication::translate("MainWindow", "\320\241\320\277\321\200\320\260\320\262\320\272\320\260", Q_NULLPTR));
     } // retranslateUi
 
