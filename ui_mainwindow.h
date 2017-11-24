@@ -100,14 +100,12 @@ public:
         gridLayout_2->addItem(horizontalSpacer, 0, 2, 1, 1);
 
         tableWidget = new QTableWidget(centralWidget);
-        if (tableWidget->columnCount() < 3)
-            tableWidget->setColumnCount(3);
+        if (tableWidget->columnCount() < 2)
+            tableWidget->setColumnCount(2);
         QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
         tableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem);
         QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
         tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
-        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
-        tableWidget->setHorizontalHeaderItem(2, __qtablewidgetitem2);
         tableWidget->setObjectName(QStringLiteral("tableWidget"));
         QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(0);
@@ -120,15 +118,16 @@ public:
         tableWidget->setFont(font);
         tableWidget->setFocusPolicy(Qt::StrongFocus);
         tableWidget->setMidLineWidth(0);
+        tableWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         tableWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
         tableWidget->setAutoScroll(false);
         tableWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
         tableWidget->setRowCount(0);
-        tableWidget->setColumnCount(3);
+        tableWidget->setColumnCount(2);
         tableWidget->horizontalHeader()->setVisible(true);
-        tableWidget->horizontalHeader()->setDefaultSectionSize(60);
-        tableWidget->horizontalHeader()->setMinimumSectionSize(60);
-        tableWidget->horizontalHeader()->setStretchLastSection(true);
+        tableWidget->horizontalHeader()->setDefaultSectionSize(200);
+        tableWidget->horizontalHeader()->setMinimumSectionSize(10);
+        tableWidget->horizontalHeader()->setStretchLastSection(false);
         tableWidget->verticalHeader()->setVisible(false);
         tableWidget->verticalHeader()->setMinimumSectionSize(50);
         tableWidget->verticalHeader()->setStretchLastSection(true);
@@ -214,8 +213,6 @@ public:
         ___qtablewidgetitem->setText(QApplication::translate("MainWindow", "BOM \321\204\320\260\320\271\320\273\321\213", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
         ___qtablewidgetitem1->setText(QApplication::translate("MainWindow", "\320\232\320\276\320\273-\320\262\320\276", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
-        ___qtablewidgetitem2->setText(QApplication::translate("MainWindow", "%", Q_NULLPTR));
         pushButton_4->setText(QApplication::translate("MainWindow", "\320\236\321\207\320\270\321\201\321\202\320\270\321\202\321\214", Q_NULLPTR));
         label->setText(QApplication::translate("MainWindow", "\320\237\321\200\320\276\321\206\320\265\321\201\321\201 \320\262\321\213\320\277\320\276\320\273\320\275\320\265\320\275\320\270\321\217", Q_NULLPTR));
         pushButton_3->setText(QApplication::translate("MainWindow", "\320\263\320\265\320\275\320\265\321\200\320\270\321\200\320\276\320\262\320\260\321\202\321\214 \321\201\320\277\320\270\321\201\320\276\320\272\n"

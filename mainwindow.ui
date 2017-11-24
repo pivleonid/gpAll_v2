@@ -102,6 +102,9 @@
       <property name="midLineWidth">
        <number>0</number>
       </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
       <property name="sizeAdjustPolicy">
        <enum>QAbstractScrollArea::AdjustToContents</enum>
       </property>
@@ -115,19 +118,19 @@
        <number>0</number>
       </property>
       <property name="columnCount">
-       <number>3</number>
+       <number>2</number>
       </property>
       <attribute name="horizontalHeaderVisible">
        <bool>true</bool>
       </attribute>
       <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>60</number>
+       <number>200</number>
       </attribute>
       <attribute name="horizontalHeaderMinimumSectionSize">
-       <number>60</number>
+       <number>10</number>
       </attribute>
       <attribute name="horizontalHeaderStretchLastSection">
-       <bool>true</bool>
+       <bool>false</bool>
       </attribute>
       <attribute name="verticalHeaderVisible">
        <bool>false</bool>
@@ -146,11 +149,6 @@
       <column>
        <property name="text">
         <string>Кол-во</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>%</string>
        </property>
       </column>
      </widget>

@@ -229,7 +229,7 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
 
     //для чтения из таблицы и подсчета процента завершения работы excel'я
     int proc = ui->tableWidget->rowCount();
-    QStringList strList;
+    QStringList strList; //путь к файлу. Только первая колонка
     for(int i = 0; i < proc ; i++){
         QTableWidgetItem* item = ui->tableWidget->item(i, 0);
         if(NULL != item)
@@ -245,8 +245,7 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
     //все BOM'ы
     int co = 0;
     QList<QStringList> peremTabl;
-    QStringList var;
-    proc = 60 / proc;
+    proc = 60 / proc; // для подсчета процента
         for (QStringList::iterator str = strList.begin(); str < strList.end(); str++) {
 
             QAxObject* ex1 = excel.documentOpen(QVariant(*str));
@@ -259,24 +258,54 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
             QAxObject* sheet = excel.documentSheetActive(name);
 
             QStringList varPerem;
-            QVariant data;
-            // 20 секунд на чтение
+            QVariant data, data1, data2;
 
+            int line = 0;// номер строки, в которой есть  Ref Designator, Part Number и QTY (кол-во)
+            int refDez = 0;
+            int partNumber = 0;
+            int qty = 0;
+            //В каждом документе в первом столбце есть #, после которой идут элементы
+            for (int i = 1; i < 100 ; i++){
+                if (excel.sheetCellInsert(sheet, data, i, 1)){
+                    if (data.toString() == "#"){
+                        line = i;
+                        //строка найдена, теперь ищу колонки
+                        for (int i = 1;i <100 ; i++){
+                            if (excel.sheetCellInsert(sheet, data, line, i)){
+                                if(data == "Ref Designator")
+                                    refDez = i;
+                                if(data == "Part Number")
+                                    partNumber = i;
+                                if(data == "QTY")
+                                    qty = i;
+                                if((refDez != 0) && (partNumber != 0) && (qty != 0))
+                                    break;
+                            }
+                            else mesOut("Ошибка обработки BOM данных!");
+                        }
+                        break;
+                    }
+                }
+                else mesOut("Ошибка обработки BOM данных!");
+            }
+            if(line * refDez * partNumber * qty == 0){
+               mesOut("В файле:\n" + *str + "проверить наличие столбцов:\n #, Ref Designator, Part Number и QTY");
+               return;
+            }
             ///ЧТЕНИЕ ДАННЫХ!!!
-            for(int i = 2;  ; i++){
-                if (excel.sheetCellInsert(sheet, data, i, 2))
+            for(int i = line + 1;  ; i++){
+                if (excel.sheetCellInsert(sheet, data, i, refDez))
                     varPerem << data.toString();
-                else{
-                    mesOut("Ошибка обработки BOM данных!");
-                    //  return errMes;
-                }
-                if (excel.sheetCellInsert(sheet, data, i, 3)){
+                else   mesOut("Ошибка обработки BOM данных!");
+                if (excel.sheetCellInsert(sheet, data, i, partNumber)){
                     varPerem << data.toString();
                 }
-                else{
-                    mesOut("Ошибка обработки BOM данных!");
-                    //  return errMes;
+                else   mesOut("Ошибка обработки BOM данных!");
+                if (excel.sheetCellInsert(sheet, data, i, qty)){
+                    varPerem << data.toString();
                 }
+                else   mesOut("Ошибка обработки BOM данных!");
+
                 int g = varPerem.count();
                 if(varPerem[g-1] == "" && varPerem[g-2] == "" )
                     break;
