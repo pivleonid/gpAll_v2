@@ -53,10 +53,14 @@ public:
   ActiveExcel();
   /*==================================================================*/
   /*!  \brief
-   Проверка работы ворда
+   Проверка работы excel
   */
   bool excelConnect(){
     return (flagConnect & flagWorkBooks);
+  }
+
+  void setVisible(bool a){
+      excelApplication_->setProperty("Visible", a);
   }
 
   ~ActiveExcel();
@@ -88,7 +92,7 @@ public:
   Закрытие документа без сохранения.
   Указатель на документ будет удален внутри функции
   */
-  bool documentClose(QAxObject* document);   /*!< [in] указатель на созданный документ  */
+  bool workBookClose(QAxObject* document);   /*!< [in] указатель на созданный документ  */
   /*==================================================================*/
   /*!  \brief
    * указатель на документ будет удален внутри функции
@@ -169,7 +173,8 @@ public:
   //последняя строчка
   QVariant lastCol();
 
-
+  //цвет фона ячейки
+    void sheetCellColorInsert(QAxObject* sheet, QVariant& data, QVariant row, QVariant col);
 };
 
 

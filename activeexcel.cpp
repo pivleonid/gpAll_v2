@@ -74,10 +74,10 @@ QAxObject* ActiveExcel::documentSheetActive( QString sheet){
 }
 
 
-bool ActiveExcel::documentClose(QAxObject* document){
+bool ActiveExcel::workBookClose(QAxObject* workBook){
   flagClose = true;
-  bool ret = document->dynamicCall("Close(wdDoNotSaveChanges)").toBool();
-  delete document;
+  bool ret = workBook->dynamicCall("Close(wdDoNotSaveChanges)").toBool();
+  delete workBook;
   return ret;
 
 }
@@ -179,7 +179,13 @@ QVariant ActiveExcel::lastCol(){
 
 }
 
-
+void ActiveExcel::sheetCellColorInsert(QAxObject* sheet, QVariant& data, QVariant row, QVariant col){
+   QAxObject* cell = sheet->querySubObject("Cells(QVariant,QVariant)", row , col);
+   QAxObject* interior = cell->querySubObject("Interior");
+   data = interior->property("Color");
+   delete interior;
+   delete cell;
+}
 
 
 

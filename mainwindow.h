@@ -42,7 +42,7 @@ private:
   //Получение и суммирование всех BOM файлов
   //                    [key] - [эл-т1][кол-во][%]
   //                            [эл-т2][кол-во][%]
- void operationSumRefDez(QMap<QString, QList<QStringList>> & mapVarLisrCont);
+ int operationSumRefDez(QMap<QString, QList<QStringList>> & mapVarLisrCont);
   //Получение данных со склада
   listStringInt_t operationSklad();
   // поиск элементов из BOM файла в файле со складом.

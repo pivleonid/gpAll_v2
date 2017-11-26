@@ -90,7 +90,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, 0x80000000 | 8,    9,
+    QMetaType::Int, 0x80000000 | 8,    9,
     0x80000000 | 11,
     0x80000000 | 13, 0x80000000 | 8, 0x80000000 | 15,   14,   16,
 
@@ -108,7 +108,8 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 2: _t->clear(); break;
         case 3: _t->generate(); break;
         case 4: _t->openAbout(); break;
-        case 5: _t->operationSumRefDez((*reinterpret_cast< QMap<QString,QList<QStringList> >(*)>(_a[1]))); break;
+        case 5: { int _r = _t->operationSumRefDez((*reinterpret_cast< QMap<QString,QList<QStringList> >(*)>(_a[1])));
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = std::move(_r); }  break;
         case 6: { listStringInt_t _r = _t->operationSklad();
             if (_a[0]) *reinterpret_cast< listStringInt_t*>(_a[0]) = std::move(_r); }  break;
         case 7: { QList<QStringList> _r = _t->operationSearch((*reinterpret_cast< QMap<QString,QList<QStringList> >(*)>(_a[1])),(*reinterpret_cast< listStringInt_t(*)>(_a[2])));

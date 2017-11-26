@@ -99,7 +99,15 @@ void MainWindow::generate(){
 
 
     QMap<QString, QList<QStringList> > dataBom, dataBomOut;
-    operationSumRefDez(dataBom);
+    int err = 0;
+    err = operationSumRefDez(dataBom);
+    if(err < 0){
+        if(err == -10) // не критичная ошибка
+           goto m1;
+        return;
+
+    }
+    m1:
     listStringInt_t dataSklad;
     dataSklad = operationSklad();
     QList<QStringList> datInWord;
@@ -225,8 +233,9 @@ listStringInt_t MainWindow::operationSklad(){
 
 }
 //------------------------------------------------------------------------
-void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLisrCont){
+int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLisrCont){
 
+    bool flagErr = false; // флаг выставляется при "Ошибка обработки BOM данных!"
     //для чтения из таблицы и подсчета процента завершения работы excel'я
     int proc = ui->tableWidget->rowCount();
     QStringList strList; //путь к файлу. Только первая колонка
@@ -240,25 +249,26 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
     ActiveExcel excel;
     if(!excel.excelConnect()){
         mesOut("Не установлен excel");
-        // return errMes;
+        return -1;
     }
-    //все BOM'ы
-    int co = 0;
+
+    int co = 0; //счетчик строк QTableWidget
     QList<QStringList> peremTabl;
     proc = 60 / proc; // для подсчета процента
         for (QStringList::iterator str = strList.begin(); str < strList.end(); str++) {
 
             QAxObject* ex1 = excel.documentOpen(QVariant(*str));
 
-            if(ex1 == NULL)
+            if(ex1 == NULL){
                 mesOut("Невозможно открыть BOM:\n" + *str
                        +"\nПроверте возможность редактирования");
-            //
+                return -2;
+            }
             QString name = excel.sheetName().toString();
             QAxObject* sheet = excel.documentSheetActive(name);
 
             QStringList varPerem;
-            QVariant data, data1, data2;
+            QVariant data;
 
             int line = 0;// номер строки, в которой есть  Ref Designator, Part Number и QTY (кол-во)
             int refDez = 0;
@@ -281,30 +291,30 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
                                 if((refDez != 0) && (partNumber != 0) && (qty != 0))
                                     break;
                             }
-                            else mesOut("Ошибка обработки BOM данных!");
+                            else { mesOut("Ошибка обработки BOM данных!"); flagErr = true;}
                         }
                         break;
                     }
                 }
-                else mesOut("Ошибка обработки BOM данных!");
+                else { mesOut("Ошибка обработки BOM данных!") ;flagErr = true;}
             }
             if(line * refDez * partNumber * qty == 0){
                mesOut("В файле:\n" + *str + "проверить наличие столбцов:\n #, Ref Designator, Part Number и QTY");
-               return;
+               return -1;
             }
             ///ЧТЕНИЕ ДАННЫХ!!!
             for(int i = line + 1;  ; i++){
                 if (excel.sheetCellInsert(sheet, data, i, refDez))
                     varPerem << data.toString();
-                else   mesOut("Ошибка обработки BOM данных!");
+                else   {mesOut("Ошибка обработки BOM данных!"); flagErr = true;}
                 if (excel.sheetCellInsert(sheet, data, i, partNumber)){
                     varPerem << data.toString();
                 }
-                else   mesOut("Ошибка обработки BOM данных!");
+                else   {mesOut("Ошибка обработки BOM данных!"); flagErr = true;}
                 if (excel.sheetCellInsert(sheet, data, i, qty)){
                     varPerem << data.toString();
                 }
-                else   mesOut("Ошибка обработки BOM данных!");
+                else {mesOut("Ошибка обработки BOM данных!"); flagErr = true;}
 
                 int g = varPerem.count();
                 if(varPerem[g-1] == "" && varPerem[g-2] == "" )
@@ -313,9 +323,8 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
             excel.documentClose(ex1);
 
             QTableWidgetItem* item = ui->tableWidget->item(co, 1);
-            QTableWidgetItem* item1 = ui->tableWidget->item(co, 2);
             QStringList perrem;
-            perrem << item->text() << item1->text();
+            perrem << item->text();
             peremTabl << varPerem << perrem;
             ui->progressBar->setValue(proc);
             QCoreApplication::processEvents();
@@ -323,8 +332,8 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
             co++;
         }
 
-     //peremTable [0],[2] ... набор всех данных из BOM.
-    //[1] (и все нечетные) содержат два элемента: кол-во  и %
+     //В peremTable лежат : [0],[2] ... набор всех данных из BOM.
+    //                      [1],[3] кол-во эл-тов и цвет, переведенный в количество
 
     //--начало формирования Всех префиксов
         QStringList Prefix, allPrefix;
@@ -495,6 +504,8 @@ void  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLi
 
 mapVarLisrCont = mapVarLisrCont2;
 
+if(flagErr == true)
+    return -10;
 }
 //------------------------------------------------------------------------
 QList<QStringList> MainWindow::operationSearch(QMap<QString, QList<QStringList> > &dataSkladAndSum, listStringInt_t &dataSklad){
