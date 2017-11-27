@@ -9,6 +9,12 @@
 #include "qdatetime.h"
 #include "qinputdialog.h"
 
+#define EXCEL_COLOR_GREEN 5287936
+#define EXCEL_COLOR_YELLOW 65535
+#define EXCEL_COLOR_RED 5287936
+#define EXCEL_COLOR_WHITE 16777215
+#define EXCEL_COLOR_BLUE 12611584
+
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
@@ -81,21 +87,21 @@ void MainWindow::generate(){
 
     ui->progressBar->setValue(0);
     QCoreApplication::processEvents();
-    ActiveWord word;
-    if(!word.wordConnect()){
-        QMessageBox msgBox;
-        msgBox.setText("Word не установлен");
-        msgBox.exec();
-        return;
-    }
-    QString path = QApplication::applicationDirPath() + "/test.docx";
-    QAxObject* doc = word.documentOpen(path);
-    if(doc == NULL){
-        QMessageBox msgBox;
-        msgBox.setText("Не найден word- шаблон");
-        msgBox.exec();
-        return;
-    }
+//    ActiveWord word;
+//    if(!word.wordConnect()){
+//        QMessageBox msgBox;
+//        msgBox.setText("Word не установлен");
+//        msgBox.exec();
+//        return;
+//    }
+//    QString path = QApplication::applicationDirPath() + "/test.docx";
+//    QAxObject* doc = word.documentOpen(path);
+//    if(doc == NULL){
+//        QMessageBox msgBox;
+//        msgBox.setText("Не найден word- шаблон");
+//        msgBox.exec();
+//        return;
+//    }
 
 
     QMap<QString, QList<QStringList> > dataBom, dataBomOut;
@@ -114,23 +120,23 @@ void MainWindow::generate(){
     datInWord = operationSearch(dataBom, dataSklad);
 
     QString dt = QDateTime::currentDateTime().toString();
-    word.findReplaseLabel("[Dat]" , dt, false);
+    //word.findReplaseLabel("[Dat]" , dt, false);
 
 
     //заполнение таблицы
-    QStringList listLabel = word.tableGetLabels(1, 3);
-    ui->progressBar->setValue(80);
-    QCoreApplication::processEvents();
-    if (word.tableFill(datInWord,listLabel,1,3) < 0){
-        mesOut("Ошибка заполнения таблицы!");
-        word.setVisible();
-        return;
-    }
-    ui->progressBar->setValue(100);
-    QCoreApplication::processEvents();
-    word.setVisible();
-    int u;
-    u++;
+    //QStringList listLabel = word.tableGetLabels(1, 3);
+//    ui->progressBar->setValue(80);
+//    QCoreApplication::processEvents();
+//    if (word.tableFill(datInWord,listLabel,1,3) < 0){
+//        mesOut("Ошибка заполнения таблицы!");
+//        word.setVisible();
+//        return;
+//    }
+//    ui->progressBar->setValue(100);
+//    QCoreApplication::processEvents();
+//    word.setVisible();
+//    int u;
+//    u++;
 
 
 }
@@ -269,7 +275,7 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
 
             QStringList varPerem;
             QVariant data;
-
+//--#-- Поиск строки и колонок из которых считываются данные
             int line = 0;// номер строки, в которой есть  Ref Designator, Part Number и QTY (кол-во)
             int refDez = 0;
             int partNumber = 0;
@@ -302,6 +308,7 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
                mesOut("В файле:\n" + *str + "проверить наличие столбцов:\n #, Ref Designator, Part Number и QTY");
                return -1;
             }
+//--#-- Конец -- Поиск строки и колонок из которых считываются данные
             ///ЧТЕНИЕ ДАННЫХ!!!
             for(int i = line + 1;  ; i++){
                 if (excel.sheetCellInsert(sheet, data, i, refDez))
@@ -315,16 +322,20 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
                     varPerem << data.toString();
                 }
                 else {mesOut("Ошибка обработки BOM данных!"); flagErr = true;}
+                excel.sheetCellColorInsert(sheet, data, i, partNumber);
+                varPerem << data.toString();
 
                 int g = varPerem.count();
-                if(varPerem[g-1] == "" && varPerem[g-2] == "" )
+                if(varPerem[g-2] == "" && varPerem[g-3] == "" )
                     break;
             }
             excel.workbookClose(ex1);
 
             QTableWidgetItem* item = ui->tableWidget->item(co, 1);
+            QTableWidgetItem* item1 = ui->tableWidget->item(co, 2);
             QStringList perrem;
             perrem << item->text();
+            perrem << item1->text();
             peremTabl << varPerem << perrem;
             ui->progressBar->setValue(proc);
             QCoreApplication::processEvents();
@@ -332,7 +343,7 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
             co++;
         }
 
-     //В peremTable лежат : [0],[2] ... набор всех данных из BOM.
+     //В peremTable лежат : [0],[2] ... набор всех данных из BOM. = {Ref Designator, patNumber, QTY, color}
     //                      [1],[3] кол-во эл-тов и цвет, переведенный в количество
 
     //--начало формирования Всех префиксов
@@ -344,6 +355,15 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
             }
         }
     for (QStringList::iterator it = Prefix.begin(); it < Prefix.end(); it++) {
+
+        int c = (*it).indexOf(",");
+        if(c > 0){
+            (*it).remove(c, (*it).count() - c);
+        }
+        c = (*it).indexOf("-");
+        if(c > 0){
+            (*it).remove(c, (*it).count() - c);
+        }
         (*it).remove(QRegExp("[^A-Za-zА-Яа-я]"));
     }
     //Удаляю дубликаты
@@ -366,14 +386,24 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
         foreach (auto it, allPrefix) {
 
             for (QStringList::iterator it1 = peremTabl[i].begin();it1 < peremTabl[i].end(); it1++) {
-                QString name = *it1;
-                name = name.remove(QRegExp("[^A-Za-zА-Яа-я]"));
-                if( it == name){
-                    mapVarLisrBegin[it].append (*(it1 + 1));
+                int c = (*it1).indexOf(",");
+                if(c > 0){
+                    (*it1).remove(c, (*it1).count() - c);
                 }
-                it1++;// т.к. след. значение через 1
+                c = (*it1).indexOf("-");
+                if(c > 0){
+                    (*it1).remove(c, (*it1).count() - c);
+                }
+                (*it1).remove(QRegExp("[^A-Za-zА-Яа-я]"));
+                //name = name.remove(QRegExp("[^A-Za-zА-Яа-я]"));
+                if( it == *it1){
+                    mapVarLisrBegin[it].append (*(it1 + 1));
+                    mapVarLisrBegin[it].append (*(it1 + 2)); //кол-во элемнтов
+                }
+                it1 = it1 + 3;// т.к. след. значение через 3
             }
         }
+//==--mapVarLisrBegin харнит [key] - [refDez1][qnt1][refdez2][qnt2]...
         //Добавить к контейнеру хотелки Бориса
 
         foreach (QString key, mapVarLisrBegin.keys()) {
@@ -390,29 +420,75 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
 
         }
     }
-    //--mapVarListEnd - [key] = [0] - что за элемент - хранит qstringlist эл-тов
-    //                          [1] - [0] - кол-во в BOM 1
-    //                          [1] - [1] - %
-    //                          [2] - что за элемент- хранит qstringlist эл-тов
-    //                          [1] - [0] - кол-во в BOM 2
-    //                          [1] - [1] - %
-    // и т.д.
+
+    /*
+//--//--mapVarListEnd - [key] = [0][0] refDez1
+                                [0][1] кол-во1
+                                [0][2] refDez2
+                                [0][3] кол-во2
+                                .....
+                                [1] - [0] - кол-во в BOM 1
+                                [1] - [1] - %
+                                [2][0] refDezk
+                                [2][1] кол-воk
+                                ...
+                                [3][0]- кол-во в BOM 2
+                                [3][1]- %
+
+    */
+    mapVarLisrBegin.clear();
+     QMap<QString, QList<QStringList> > mapVarList;
+    foreach (QString key, allPrefix)
+        mapVarList[key];
+ //-------------------------------------------------------------------------------------------
+ //По каждому элементу в кол-ве должно быть учтнено кол-во BOM'ов и %
+ //-------------------------------------------------------------------------------------------
+    foreach (QString key, mapVarLisrEnd.keys()) {
+        QStringList varKN;
+        int contIntKey = mapVarLisrEnd[key].count();
+        for(int i = 0; i < contIntKey;i = i + 2){
+            QStringList temp1 = mapVarLisrEnd[key][i + 1];
+            int cont = temp1[0].toInt();
+            int percent = temp1[1].toInt();
+            //пробегаюсь по значению ключа
+            for( QStringList::iterator it = mapVarLisrEnd[key][i].begin(); it < mapVarLisrEnd[key][i].end(); it++){
+                varKN << *it;
+                it++;
+                QString temp = *it;
+                int numb = temp.toInt();
+                numb *= cont;
+                numb = numb + (int)ceil(numb * percent/100);
+                varKN << QString(numb);
+                int k;
+                k++;
+
+            }
+            mapVarList[key] << varKN;
+        }
+    }
+ //-------------------------------------------------------------------------------------------
+   /*
+    mapVarList[key]  ---- [0] --- [partNumber]
+                          [1] --- [number] //состоящее из кол-ва qty кол-ва BOM файлов и %
+                          ...
+    */
  //-------------------------------------------------------------------------------------------
 
-  QMap<QString, QList<QStringList> > mapVarLisrCont1, mapVarLisrCont2; //выходная переменная из этого алгоритма
+    QMap<QString, QList<QStringList> > mapVarLisrCont1, mapVarLisrCont2; //выходная переменная из этого алгоритма
     bool flag = true;
     foreach (QString key, mapVarLisrEnd.keys ()) {
         mapVarLisrCont1[key];
-         mapVarLisrCont2[key];
+        mapVarLisrCont2[key];
     }
+    //----------------------//
     foreach (QString key, mapVarLisrEnd.keys()) {
         int contIntKey = mapVarLisrEnd[key].count();
-        for(int i = 0; i <contIntKey;i = i+2){
+        for(int i = 0; i < contIntKey;i = i + 2){
             QStringList varK;
             QList <QStringList> varKN;
             for( QStringList::iterator it = mapVarLisrEnd[key][i].begin(); it <mapVarLisrEnd[key][i].end(); it++){
 
-                varK << *it;
+                varK << *it; //хранит refDez1 nuber1 refDez2 ...
             }
             for (QStringList::iterator it = varK.begin(); it < varK.end(); it++) {
                 //  Первый влет- по ключу запиывается первый элемент

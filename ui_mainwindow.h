@@ -100,12 +100,24 @@ public:
         gridLayout_2->addItem(horizontalSpacer, 0, 2, 1, 1);
 
         tableWidget = new QTableWidget(centralWidget);
-        if (tableWidget->columnCount() < 2)
-            tableWidget->setColumnCount(2);
+        if (tableWidget->columnCount() < 3)
+            tableWidget->setColumnCount(3);
         QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
         tableWidget->setHorizontalHeaderItem(0, __qtablewidgetitem);
         QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
         tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
+        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
+        tableWidget->setHorizontalHeaderItem(2, __qtablewidgetitem2);
+        if (tableWidget->rowCount() < 1)
+            tableWidget->setRowCount(1);
+        QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
+        tableWidget->setVerticalHeaderItem(0, __qtablewidgetitem3);
+        QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
+        tableWidget->setItem(0, 0, __qtablewidgetitem4);
+        QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
+        tableWidget->setItem(0, 1, __qtablewidgetitem5);
+        QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
+        tableWidget->setItem(0, 2, __qtablewidgetitem6);
         tableWidget->setObjectName(QStringLiteral("tableWidget"));
         QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(0);
@@ -122,8 +134,8 @@ public:
         tableWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
         tableWidget->setAutoScroll(false);
         tableWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
-        tableWidget->setRowCount(0);
-        tableWidget->setColumnCount(2);
+        tableWidget->setRowCount(1);
+        tableWidget->setColumnCount(3);
         tableWidget->horizontalHeader()->setVisible(true);
         tableWidget->horizontalHeader()->setDefaultSectionSize(200);
         tableWidget->horizontalHeader()->setMinimumSectionSize(10);
@@ -213,6 +225,21 @@ public:
         ___qtablewidgetitem->setText(QApplication::translate("MainWindow", "BOM \321\204\320\260\320\271\320\273\321\213", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
         ___qtablewidgetitem1->setText(QApplication::translate("MainWindow", "\320\232\320\276\320\273-\320\262\320\276", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem2 = tableWidget->horizontalHeaderItem(2);
+        ___qtablewidgetitem2->setText(QApplication::translate("MainWindow", "%", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem3 = tableWidget->verticalHeaderItem(0);
+        ___qtablewidgetitem3->setText(QApplication::translate("MainWindow", "1", Q_NULLPTR));
+
+        const bool __sortingEnabled = tableWidget->isSortingEnabled();
+        tableWidget->setSortingEnabled(false);
+        QTableWidgetItem *___qtablewidgetitem4 = tableWidget->item(0, 0);
+        ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "d:\\projects\\gpAll\\\320\244\320\221. \320\240\320\232\320\224. \320\237\321\200\320\265\321\201\320\265\320\273\320\265\320\272\321\202\320\276\321\200 0040S. \320\222\320\265\320\264\320\276\320\274\320\276\321\201\321\202\321\214   v1.0.2.xlsx", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem5 = tableWidget->item(0, 1);
+        ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "5", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem6 = tableWidget->item(0, 2);
+        ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "10", Q_NULLPTR));
+        tableWidget->setSortingEnabled(__sortingEnabled);
+
         pushButton_4->setText(QApplication::translate("MainWindow", "\320\236\321\207\320\270\321\201\321\202\320\270\321\202\321\214", Q_NULLPTR));
         label->setText(QApplication::translate("MainWindow", "\320\237\321\200\320\276\321\206\320\265\321\201\321\201 \320\262\321\213\320\277\320\276\320\273\320\275\320\265\320\275\320\270\321\217", Q_NULLPTR));
         pushButton_3->setText(QApplication::translate("MainWindow", "\320\263\320\265\320\275\320\265\321\200\320\270\321\200\320\276\320\262\320\260\321\202\321\214 \321\201\320\277\320\270\321\201\320\276\320\272\n"
