@@ -29,7 +29,7 @@ ActiveExcel::~ActiveExcel(){
 }
 
 
-QAxObject* ActiveExcel::documentOpen(QVariant path){
+QAxObject* ActiveExcel::workbookOpen(QVariant path){
   QAxObject *document;
   if (path == "") document = worcbooks_->querySubObject("Add");
   else document = worcbooks_->querySubObject("Add(const QVariant &)", path);
@@ -59,7 +59,7 @@ QStringList ActiveExcel::sheetsList(){
 
 
 
-QAxObject* ActiveExcel::documentAddSheet(QVariant sheetName ){
+QAxObject* ActiveExcel::workbookAddSheet(QVariant sheetName ){
 
     QAxObject *active;
     active =  sheets_->querySubObject("Add");
@@ -67,14 +67,14 @@ QAxObject* ActiveExcel::documentAddSheet(QVariant sheetName ){
     return active;
 }
 
-QAxObject* ActiveExcel::documentSheetActive( QString sheet){
+QAxObject* ActiveExcel::workbookSheetActive( QString sheet){
 
     return sheets_->querySubObject( "Item(const QVariant&)", sheet );
 
 }
 
 
-bool ActiveExcel::workBookClose(QAxObject* workBook){
+bool ActiveExcel::workbookClose(QAxObject* workBook){
   flagClose = true;
   bool ret = workBook->dynamicCall("Close(wdDoNotSaveChanges)").toBool();
   delete workBook;
@@ -82,7 +82,7 @@ bool ActiveExcel::workBookClose(QAxObject* workBook){
 
 }
 
-bool ActiveExcel::documentCloseAndSave(QAxObject *document, QVariant path){
+bool ActiveExcel::workbookCloseAndSave(QAxObject *document, QVariant path){
       bool ret = document -> dynamicCall("SaveAs(const QVariant&)", path).toBool();
       document->dynamicCall("Close(wdDoNotSaveChanges)");
       flagClose = true;
@@ -171,13 +171,7 @@ QVariant ActiveExcel::sheetName(){
    return name;
 }
 
-QVariant ActiveExcel::lastCol(){
 
-//    lLastCol = Cells(1, Columns.Count).End(xlToLeft).Column
-//  QVariant lastColumn;
-//    QAxObject* cell = sheet->querySubObject("Cells(QVariant,QVariant)", row , col);
-
-}
 
 void ActiveExcel::sheetCellColorInsert(QAxObject* sheet, QVariant& data, QVariant row, QVariant col){
    QAxObject* cell = sheet->querySubObject("Cells(QVariant,QVariant)", row , col);

@@ -146,7 +146,7 @@ listStringInt_t MainWindow::operationSklad(){
       mesOut("Не установлен excel");
       return errMes;
     }
-  QAxObject* ex1 = excel.documentOpen(QVariant(fileName_DATA));
+  QAxObject* ex1 = excel.workbookOpen(QVariant(fileName_DATA));
   if(ex1 == NULL)
     mesOut("Невозможно открыть файл склада:\n" + fileName_DATA
            +"\nПроверте возможность редактирования");
@@ -155,7 +155,7 @@ listStringInt_t MainWindow::operationSklad(){
   QStringList varPerem;
 
   foreach (QString name, names) {
-      QAxObject* sheetActiv = excel.documentSheetActive(name);
+      QAxObject* sheetActiv = excel.workbookSheetActive(name);
       int colType = 0;
       int colCol = 0;
       int rol = 0;
@@ -226,7 +226,7 @@ listStringInt_t MainWindow::operationSklad(){
       sklad.append(list);
 
     }
-      excel.documentClose(ex1);
+      excel.workbookClose(ex1);
       ui->progressBar->setValue(70);
       QCoreApplication::processEvents();
       return sklad;
@@ -257,7 +257,7 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
     proc = 60 / proc; // для подсчета процента
         for (QStringList::iterator str = strList.begin(); str < strList.end(); str++) {
 
-            QAxObject* ex1 = excel.documentOpen(QVariant(*str));
+            QAxObject* ex1 = excel.workbookOpen(QVariant(*str));
 
             if(ex1 == NULL){
                 mesOut("Невозможно открыть BOM:\n" + *str
@@ -265,7 +265,7 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
                 return -2;
             }
             QString name = excel.sheetName().toString();
-            QAxObject* sheet = excel.documentSheetActive(name);
+            QAxObject* sheet = excel.workbookSheetActive(name);
 
             QStringList varPerem;
             QVariant data;
@@ -320,7 +320,7 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
                 if(varPerem[g-1] == "" && varPerem[g-2] == "" )
                     break;
             }
-            excel.documentClose(ex1);
+            excel.workbookClose(ex1);
 
             QTableWidgetItem* item = ui->tableWidget->item(co, 1);
             QStringList perrem;
