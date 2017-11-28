@@ -108,16 +108,24 @@ public:
         tableWidget->setHorizontalHeaderItem(1, __qtablewidgetitem1);
         QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
         tableWidget->setHorizontalHeaderItem(2, __qtablewidgetitem2);
-        if (tableWidget->rowCount() < 1)
-            tableWidget->setRowCount(1);
+        if (tableWidget->rowCount() < 2)
+            tableWidget->setRowCount(2);
         QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
         tableWidget->setVerticalHeaderItem(0, __qtablewidgetitem3);
         QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
-        tableWidget->setItem(0, 0, __qtablewidgetitem4);
+        tableWidget->setVerticalHeaderItem(1, __qtablewidgetitem4);
         QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
-        tableWidget->setItem(0, 1, __qtablewidgetitem5);
+        tableWidget->setItem(0, 0, __qtablewidgetitem5);
         QTableWidgetItem *__qtablewidgetitem6 = new QTableWidgetItem();
-        tableWidget->setItem(0, 2, __qtablewidgetitem6);
+        tableWidget->setItem(0, 1, __qtablewidgetitem6);
+        QTableWidgetItem *__qtablewidgetitem7 = new QTableWidgetItem();
+        tableWidget->setItem(0, 2, __qtablewidgetitem7);
+        QTableWidgetItem *__qtablewidgetitem8 = new QTableWidgetItem();
+        tableWidget->setItem(1, 0, __qtablewidgetitem8);
+        QTableWidgetItem *__qtablewidgetitem9 = new QTableWidgetItem();
+        tableWidget->setItem(1, 1, __qtablewidgetitem9);
+        QTableWidgetItem *__qtablewidgetitem10 = new QTableWidgetItem();
+        tableWidget->setItem(1, 2, __qtablewidgetitem10);
         tableWidget->setObjectName(QStringLiteral("tableWidget"));
         QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(0);
@@ -134,7 +142,7 @@ public:
         tableWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
         tableWidget->setAutoScroll(false);
         tableWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
-        tableWidget->setRowCount(1);
+        tableWidget->setRowCount(2);
         tableWidget->setColumnCount(3);
         tableWidget->horizontalHeader()->setVisible(true);
         tableWidget->horizontalHeader()->setDefaultSectionSize(200);
@@ -229,15 +237,23 @@ public:
         ___qtablewidgetitem2->setText(QApplication::translate("MainWindow", "%", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem3 = tableWidget->verticalHeaderItem(0);
         ___qtablewidgetitem3->setText(QApplication::translate("MainWindow", "1", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem4 = tableWidget->verticalHeaderItem(1);
+        ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "2", Q_NULLPTR));
 
         const bool __sortingEnabled = tableWidget->isSortingEnabled();
         tableWidget->setSortingEnabled(false);
-        QTableWidgetItem *___qtablewidgetitem4 = tableWidget->item(0, 0);
-        ___qtablewidgetitem4->setText(QApplication::translate("MainWindow", "d:\\projects\\gpAll\\\320\244\320\221. \320\240\320\232\320\224. \320\237\321\200\320\265\321\201\320\265\320\273\320\265\320\272\321\202\320\276\321\200 0040S. \320\222\320\265\320\264\320\276\320\274\320\276\321\201\321\202\321\214   v1.0.2.xlsx", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem5 = tableWidget->item(0, 1);
-        ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "5", Q_NULLPTR));
-        QTableWidgetItem *___qtablewidgetitem6 = tableWidget->item(0, 2);
-        ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "10", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem5 = tableWidget->item(0, 0);
+        ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "d:\\projects\\gpAll\\\320\244\320\221. \320\240\320\232\320\224. \320\237\321\200\320\265\321\201\320\265\320\273\320\265\320\272\321\202\320\276\321\200 0040S. \320\222\320\265\320\264\320\276\320\274\320\276\321\201\321\202\321\214   v1.0.2.xlsx", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem6 = tableWidget->item(0, 1);
+        ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "5", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem7 = tableWidget->item(0, 2);
+        ___qtablewidgetitem7->setText(QApplication::translate("MainWindow", "10", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem8 = tableWidget->item(1, 0);
+        ___qtablewidgetitem8->setText(QApplication::translate("MainWindow", "d:\\projects\\gpAll\\\320\244\320\221. \320\240\320\232\320\224. \320\237\321\200\320\265\321\201\320\265\320\273\320\265\320\272\321\202\320\276\321\200 0040S. \320\222\320\265\320\264\320\276\320\274\320\276\321\201\321\202\321\214   v1.0.2.xlsx", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem9 = tableWidget->item(1, 1);
+        ___qtablewidgetitem9->setText(QApplication::translate("MainWindow", "3", Q_NULLPTR));
+        QTableWidgetItem *___qtablewidgetitem10 = tableWidget->item(1, 2);
+        ___qtablewidgetitem10->setText(QApplication::translate("MainWindow", "23", Q_NULLPTR));
         tableWidget->setSortingEnabled(__sortingEnabled);
 
         pushButton_4->setText(QApplication::translate("MainWindow", "\320\236\321\207\320\270\321\201\321\202\320\270\321\202\321\214", Q_NULLPTR));
