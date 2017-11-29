@@ -15,6 +15,56 @@
 #define EXCEL_COLOR_WHITE 16777215
 #define EXCEL_COLOR_BLUE 12611584
 
+struct TData{
+    QString part;
+    QList<int> counts;
+};
+
+class dataStorage{
+    QMap <QString, QList<TData>> storage_;
+public:
+    TData(){
+        QString temp;
+        QList<TData> temp1;
+        storage_.insert(temp, temp1);
+    }
+
+ void  insert(QString refDez, QString partNum, int qty, int partNumbCount, int percent ){
+        int c = refDez.indexOf(",");
+        if(c > 0){
+            refDez.remove(c, refDez.count() - c);
+        }
+        c = refDez.indexOf("-");
+        if(c > 0){
+            refDez.remove(c, refDez.count() - c);
+        }
+        refDez.remove(QRegExp("[^A-Za-zА-Яа-я]"));
+
+        int countPart = qty * partNumbCount;
+        int countPartpERCENT = qty * partNumbCount + ceil(qty * partNumbCount*percent/100);
+        // Есть ли такой ключ?
+        bool keyF = false;
+        foreach (auto var, storage_.keys()) {
+            if( var == refDez){
+                keyF = true;
+                break;
+            }
+        }
+        //Такой ключ уже существует
+        if(keyF == true){
+            //есть ли такой partNumber?
+            for (int i= 0; storage_[refDez].part.count()) {
+
+            }
+        }
+        //такого ключа нет
+        else{
+
+        }
+        //storage_.insert(refDez, )
+    }
+};
+
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
