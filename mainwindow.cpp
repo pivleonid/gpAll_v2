@@ -68,7 +68,7 @@ void MainWindow::openBoms(){
       rowCont++;
   }
   // Ресайзим колонки по содержимому
-//      ui->tableWidget->resizeColumnsToContents();
+      ui->tableWidget->resizeColumnsToContents();
 
 
 
@@ -85,8 +85,8 @@ void MainWindow::clear(){
 //------------------------------------------------------------------------
 void MainWindow::generate(){
 
-    ui->progressBar->setValue(0);
-    QCoreApplication::processEvents();
+//    ui->progressBar->setValue(0);
+//    QCoreApplication::processEvents();
 //    ActiveWord word;
 //    if(!word.wordConnect()){
 //        QMessageBox msgBox;
@@ -104,7 +104,9 @@ void MainWindow::generate(){
 //    }
 
 
-    QMap<QString, QList<QStringList> > dataBom, dataBomOut;
+
+
+    QMap<QString, QList<QStringList> > dataBom;
     int err = 0;
     err = operationSumRefDez(dataBom);
     if(err < 0){
@@ -123,8 +125,9 @@ void MainWindow::generate(){
     //word.findReplaseLabel("[Dat]" , dt, false);
 
 
-    //заполнение таблицы
-    //QStringList listLabel = word.tableGetLabels(1, 3);
+   // заполнение таблицы
+//    word.setVisible();
+//    QStringList listLabel = word.tableGetLabels(1, 3);
 //    ui->progressBar->setValue(80);
 //    QCoreApplication::processEvents();
 //    if (word.tableFill(datInWord,listLabel,1,3) < 0){
@@ -457,8 +460,11 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
                 QString temp = *it; //кол-во
                 int numb = temp.toInt();
                 numb *= cont;
-                numb = numb + (int)ceil(numb * percent/100);
-                varKN << QString::number(numb);
+                int numb1 = numb;
+                double p = ceil(numb * percent/100);
+                numb = numb + p;
+                varKN << QString::number(numb1); //без процентов
+                varKN << QString::number(numb); //с учетом процента
                 int k;
                 k++;
 
@@ -470,18 +476,20 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
  //-------------------------------------------------------------------------------------------
    /* Какие данны в mapVarList?
     mapVarList[key]  ----[0] [0] --- [partNumber]
-                         [0] [1] --- [number] //состоящее из кол-ва qty кол-ва BOM файлов и %
+                         [0] [1] --- [number] //состоящее из кол-ва qty кол-ва BOM файлов
+                         [0] [2] --- [number] //состоящее из кол-ва qty кол-ва BOM файлов и %
                           ...
                           //следующий BOM
                          [1][0]
                          ...
 */
  //-------------------------------------------------------------------------------------------
+    int countBOM = 0;
     QMap<QString, QStringList > mapStringList; // из Qlist<QStringList> сделаю QStringList
     foreach (QString key, mapVarList.keys()) { //пробегаюсь по ключам
         QStringList varKN;
         //сколько значений существует по ключу == Cколько всего BOM файлов?
-        int countBOM = mapVarList[key].count();
+         countBOM = mapVarList[key].count();
         for(int i = 0; i < countBOM; i++){
             foreach (auto var, mapVarList[key][i]) {
                 varKN << var;
@@ -493,30 +501,121 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
         varKN.clear();
     }
 
+
+    //Чтобы сохранить предыдущую логику слхраняю все в QMap<QString, QList<QStringList>>
     //теперь надо найти одинаковые эл-ты и просуммировать их
 
-                int  k ;
+                int  k ; //для отладки
+
+      QMap<QString, QList<QStringList>>     out;
     foreach (QString key, mapStringList.keys()) {
         QStringList RefDez;
         QVector<int> qty;
+        QVector<int> qtyPer; // с процентами
         int countList = mapStringList[key].count();
         RefDez << mapStringList[key][0];
         qty << mapStringList[key][1].toInt();
-        for(int i = 2; i < countList; i +=2 ){
+        qtyPer << mapStringList[key][2].toInt();
+        for(int i = 3; i < countList; i +=3 ){ //поиск начиная с 3 эл-та, через 3
 
             int ind = RefDez.indexOf(mapStringList[key][i]);
             //индекс найден
             if(ind >= 0){
                 qty[ind] += mapStringList[key][i + 1].toInt();
+                qtyPer[ind] += mapStringList[key][i + 2].toInt();
 
             }
             else{
                 RefDez << mapStringList[key][i];
                 qty    << mapStringList[key][i + 1].toInt();
+                qtyPer << mapStringList[key][i + 2].toInt();
             }
+        }
+        //пробежались по ключу- сохраним данные
+        if( (RefDez.count() != qty.count()) && (qtyPer.count() != qty.count()) )
+            return -4;
+        for(int i = 0; i < RefDez.count(); i++){
+            QStringList per;
+            per << RefDez[i] << QString::number(qty[i]) << QString::number(qtyPer[i]);
+            out[key] << per;
         }
 
     }
+    mapVarLisrCont = out;
+
+/*  QMap < QString,QList<QStringList >>
+    mapVarList[key]  ----[0] [0] --- [partNumber]
+                         [0] [1] --- [number] //состоящее из кол-ва qty кол-ва BOM файлов
+                         [0] [2] --- [number] //состоящее из кол-ва qty кол-ва BOM файлов и %
+                          ...
+                          //следующий BOM
+                         [1][0]
+                         ...
+*/
+
+    if( !countBOM ) // если нуль- то ошибка
+        return -5;
+    QList <QStringList> RefDez;
+    //QVector<int> qty(countBOM);
+    QList<QMap < QString,QStringList >> map;
+
+    bool flag = false;
+    foreach (QString key, mapVarList.keys()) {
+        for(int i = 0; i < countBOM; i++){
+            //mapVarList[key][i] - в нем лежат qstringlist
+            QStringList a;
+            foreach (auto var, mapVarList[key][i]) {
+                a << var;
+                k++;
+            }
+            QMap<QString, QStringList> b;
+            b[key].append(a);
+            if(flag == false){
+
+                map.insert(i, b);
+                if( i == countBOM -1)
+                    flag = true;
+                continue;
+            }
+
+            map[i][key].append(a);
+            // RefDez.append( a );
+             k++;
+        }
+    }
+ // в каждом map[i] хранятся по ключу элементы
+    foreach (QString key, mapVarList.keys()) {
+    for (int i = 0; i < countBOM ; i++){
+            for(int j = 0; j < map[i][key].count(); j+=3){
+        bool flagFound = false;
+                for (int z = 0; z < out[key].count(); z++){
+                    QString a = map[i][key][j];
+                    QString b = out[key][z][0];
+                    int c = out[key][z].count() + i + 1;
+                    int p = map[i][key][j].indexOf(out[key][z][0]);
+                    k++;
+                    if(p >= 0){
+                        out[key][z] << map[i][key][p + 1];
+                        flagFound = true;
+                        continue;
+
+                    }
+                    else{
+                        if( flagFound == true)
+                            continue;
+                         if (z == out[key].count() - 1)
+                            out[key][z] << "0";
+
+                    }
+                    k++;
+                }
+            }
+        }
+    }
+
+
+    return 1;
+
 
 //    QMap<QString, QStringList > mapStringListNew;
 //    foreach (QString key, mapStringList.keys()) { //пробегаюсь по ключам
@@ -683,6 +782,8 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
 QList<QStringList> MainWindow::operationSearch(QMap<QString, QList<QStringList> > &dataSkladAndSum, listStringInt_t &dataSklad){
   QMap<QString, QList<QStringList> > dataBomOut;
   //Заполняю ключами
+  int a = 1;
+  a++;
   foreach (QString key, dataSkladAndSum.keys ()) {
       dataBomOut[key];
     }

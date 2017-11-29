@@ -259,6 +259,12 @@ void selectionCopyAllText(bool buffer);
 
   QVariant tablesCount();
 
+  void tableAddColumn(QAxObject* table){
+    QAxObject* rows;
+    rows = table->querySubObject("Columns");//->dynamicCall("Add()");
+    rows->dynamicCall("Add()");
+    delete rows;
+  }
 
 
 

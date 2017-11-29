@@ -249,7 +249,7 @@ public:
         QTableWidgetItem *___qtablewidgetitem7 = tableWidget->item(0, 2);
         ___qtablewidgetitem7->setText(QApplication::translate("MainWindow", "10", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem8 = tableWidget->item(1, 0);
-        ___qtablewidgetitem8->setText(QApplication::translate("MainWindow", "d:\\projects\\gpAll\\\320\244\320\221. \320\240\320\232\320\224. \320\237\321\200\320\265\321\201\320\265\320\273\320\265\320\272\321\202\320\276\321\200 0040S. \320\222\320\265\320\264\320\276\320\274\320\276\321\201\321\202\321\214   v1.0.2.xlsx", Q_NULLPTR));
+        ___qtablewidgetitem8->setText(QApplication::translate("MainWindow", "d:\\projects\\gpAll\\\320\244\320\221. \320\240\320\232\320\224. \320\237\321\200\320\265\321\201\320\265\320\273\320\265\320\272\321\202\320\276\321\200 0040S. \320\222\320\265\320\264\320\276\320\274\320\276\321\201\321\202\321\214   v1.0.3.xlsx", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem9 = tableWidget->item(1, 1);
         ___qtablewidgetitem9->setText(QApplication::translate("MainWindow", "3", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem10 = tableWidget->item(1, 2);
