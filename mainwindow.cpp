@@ -83,7 +83,7 @@ public:
                     num = storage_[refDez].at(i).counts[numberBom-1];
                     storage_[refDez][i].counts[numberBom-1] += countPart;
                     PartNumbF = true;
-                    break;
+//                    break;
                 }
             }
             // такого partNumber'а нет
@@ -283,7 +283,8 @@ listStringInt_t MainWindow::operationSklad(){
       mesOut("Не установлен excel");
       return errMes;
     }
-  QAxObject* ex1 = excel.workbookOpen(QVariant(fileName_DATA));
+
+  QAxObject* ex1 = excel.workbookOpen(QVariant( this->ui->label_2->text()));
   if(ex1 == NULL)
     mesOut("Невозможно открыть файл склада:\n" + fileName_DATA
            +"\nПроверте возможность редактирования");
@@ -483,7 +484,8 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
     }
 
     QMap <QString, QList<TData> > a = storage.ret();
-
+     //Взять BOM и сравнить все counts !!!
+    // Во всех partNumer хранятся одинаковое кол-во эл-тов?
     foreach (auto key, a.keys()) {
         for (int i = 0; i < a[key].count(); i++){
             if (a[key][i].counts.count() != co)
@@ -491,9 +493,77 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
         }
 
     }
-    QMap<QString, QList<QStringList>> s;
+    //просуммирую все эл-ты, создав еще одну колонку
+    foreach (auto key, a.keys()) {
 
-    //Взять BOM и сравнить все counts !!!
+        for (int i = 0; i < a[key].count(); i++){
+            int per = 0;
+            for(int j = 0; j < co; j++){
+                 per += a[key][i].counts[j];
+
+            }
+             a[key][i].counts << per;
+        }
+
+    }
+   //берем складсик данные
+   listStringInt_t sklad;
+   sklad = operationSklad();
+
+
+   foreach (auto key, a.keys()) {
+
+       for (int i = 0; i < a[key].count(); i++){
+         QString partNumber =  a[key][i].part;
+         //поиск по складу
+         bool flagFound = false;
+         for(int j = 0; j < sklad.count(); j++){
+            QString s1=  sklad[j].str;
+            if(sklad[j].str.contains(partNumber, Qt::CaseInsensitive) == true){
+                 flagFound = true;
+                  a[key][i].counts << sklad[j].n;
+             }
+
+         }
+         if( flagFound == false)
+             a[key][i].counts << 0;
+
+
+       }
+   }
+   //теперь это дело надо перевести в QList<QStringList>  и засандалить в Word таблицу
+   QList<QStringList> tableDat;
+
+   foreach (auto key, a.keys()) {
+       QStringList per;
+       QString str;
+       str = key; str.prepend("["); str.append("]");
+       per << str;
+       //кол-во колонок
+       int colomns = a[key][0].counts.count();
+       for(int i = 1; i < colomns + 1; i++ )
+           per << "";
+       tableDat << per;
+       per.clear();
+
+       //i == кол-во TData
+       for(int i = 0; i < a[key].count(); i++){
+           per << a[key][i].part;
+
+           for(int j = 0; j < a[key][i].counts.count(); j++){
+               int c = a[key][i].counts[j];
+               per << QString::number(a[key][i].counts[j]);
+           }
+           tableDat << per;
+           per.clear();
+       }
+
+
+   }
+
+  k++;
+
+
 
 
     return 1;

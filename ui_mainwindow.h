@@ -228,7 +228,7 @@ public:
         actionv1_0->setText(QApplication::translate("MainWindow", "v2.0.0.0", Q_NULLPTR));
         action->setText(QApplication::translate("MainWindow", "\320\236\320\277\320\270\321\201\320\260\320\275\320\270\320\265", Q_NULLPTR));
         pushButton->setText(QApplication::translate("MainWindow", "\320\222\321\213\320\261\321\200\320\260\321\202\321\214 BOM \321\204\320\260\320\271\320\273\321\213", Q_NULLPTR));
-        label_2->setText(QString());
+        label_2->setText(QApplication::translate("MainWindow", "d:/projects/gpAll/\321\201\320\272\320\273\320\260\320\264  03.10.17.xlsx", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem = tableWidget->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("MainWindow", "BOM \321\204\320\260\320\271\320\273\321\213", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem1 = tableWidget->horizontalHeaderItem(1);
@@ -243,13 +243,13 @@ public:
         const bool __sortingEnabled = tableWidget->isSortingEnabled();
         tableWidget->setSortingEnabled(false);
         QTableWidgetItem *___qtablewidgetitem5 = tableWidget->item(0, 0);
-        ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "d:\\projects\\gpAll\\PHASE_FPGA_MAIN_01_REFDES - \320\272\320\276\320\277\320\270\321\217 (2).xlsx", Q_NULLPTR));
+        ___qtablewidgetitem5->setText(QApplication::translate("MainWindow", "d:\\projects\\gpAll\\\320\244\320\221. \320\240\320\232\320\224. \320\237\321\200\320\265\321\201\320\265\320\273\320\265\320\272\321\202\320\276\321\200 0040S. \320\222\320\265\320\264\320\276\320\274\320\276\321\201\321\202\321\214   v1.0.2.xlsx", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem6 = tableWidget->item(0, 1);
         ___qtablewidgetitem6->setText(QApplication::translate("MainWindow", "5", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem7 = tableWidget->item(0, 2);
         ___qtablewidgetitem7->setText(QApplication::translate("MainWindow", "10", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem8 = tableWidget->item(1, 0);
-        ___qtablewidgetitem8->setText(QApplication::translate("MainWindow", "d:\\projects\\gpAll\\PHASE_FPGA_MAIN_01_REFDES.xlsx", Q_NULLPTR));
+        ___qtablewidgetitem8->setText(QApplication::translate("MainWindow", "d:\\projects\\gpAll\\\320\244\320\221. \320\240\320\232\320\224. \320\237\321\200\320\265\321\201\320\265\320\273\320\265\320\272\321\202\320\276\321\200 0040S. \320\222\320\265\320\264\320\276\320\274\320\276\321\201\321\202\321\214   v1.0.3.xlsx", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem9 = tableWidget->item(1, 1);
         ___qtablewidgetitem9->setText(QApplication::translate("MainWindow", "3", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem10 = tableWidget->item(1, 2);
