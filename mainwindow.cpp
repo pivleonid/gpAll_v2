@@ -560,7 +560,28 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
 
 
    }
+   ActiveWord wordapp;
+   wordapp.documentOpen("D:/1.docx");
 
+   int b = tableDat[0].count();
+   for (int i = 0; i < b - 1 ; i++){
+       if(i == b - 2){
+           wordapp.tableAddColumn(1, i+1, "Наличие на складе", "[" + QString::number(i) + "]" , 1);
+           continue;
+       }
+       if(i == b - 3){
+           wordapp.tableAddColumn(1, i+1, "Сумма всех элементов", "[" + QString::number(i) + "]" , 1);
+           continue;
+       }
+       wordapp.tableAddColumn(1, i+1, QString::number(i), "[" + QString::number(i) + "]" , 1);
+   }
+
+
+   QStringList listLabel = wordapp.tableGetLabels(1, 2);
+   ui->progressBar->setValue(80);
+   QCoreApplication::processEvents();
+   wordapp.tableFill(tableDat,listLabel,1,2) ;
+   wordapp.setVisible();
   k++;
 
 
