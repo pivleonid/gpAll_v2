@@ -597,7 +597,66 @@ int ActiveWord::colontitulReplaseLabel( QAxObject* doc, QString oldString, QStri
     }
 
 
+void ActiveWord::tableAddColumn(int indexTable, int afterColumn, QString text, QString label, int row){
+
+        QAxObject* act = wordApplication_->querySubObject("ActiveDocument");
+        QAxObject* tables = act->querySubObject("Tables");
+        //индекс указывает на искомую таблицу
+        QAxObject* table = tables->querySubObject("Item(const QVariant&)", indexTable);
+         QAxObject* columns =  table->querySubObject("Columns");
+        QAxObject* col = columns->querySubObject("Item(const QVariant&)", afterColumn);
+        col->dynamicCall("Select()");
+         //Selection.InsertColumnsRight
+         QAxObject* wordSelection = wordApplication_->querySubObject("Selection");
+         wordSelection->dynamicCall("InsertColumnsRight()");
 
 
+         //вставка названия колонки
+         QAxObject* cell = table->querySubObject("Cell(const QVariant& , const QVariant&)",row ,afterColumn + 1);
+         cell->querySubObject("Range")->dynamicCall("Select()");
+         QAxObject* sel =wordApplication_->querySubObject("Selection");
+         sel->dynamicCall("TypeText(Text)", QVariant(text));
+          //вставка метки в ячейку
+         cell = table->querySubObject("Cell(const QVariant& , const QVariant&)",row + 1 ,afterColumn + 1);
+         cell->querySubObject("Range")->dynamicCall("Select()");
+         sel =wordApplication_->querySubObject("Selection");
+         sel->dynamicCall("TypeText(Text)", QVariant(label));
 
+         delete sel;
+         delete cell;
+         delete wordSelection;
+         delete col;
+         delete columns;
+         delete       table;
+         delete       tables;
+         delete       act;
+
+}
+
+
+void ActiveWord::tableAddLineWithText(int tableIndex, int number, QString string){
+
+    QAxObject* act = wordApplication_->querySubObject("ActiveDocument");
+    QAxObject* tables = act->querySubObject("Tables");
+
+    QAxObject* table = tables->querySubObject("Item(const QVariant&)", tableIndex);
+
+    QAxObject* rows =  table->querySubObject("Rows");
+
+    rows->dynamicCall("Add()");
+
+    int tabColumns = rows->dynamicCall("count").toInt();
+
+    QAxObject* cell = table->querySubObject("Cell(const QVariant& , const QVariant&)",tabColumns , number);
+    cell->querySubObject("Range")->dynamicCall("Select()");
+    QAxObject* sel =wordApplication_->querySubObject("Selection");
+    sel->dynamicCall("TypeText(Text)", QVariant(string));
+
+    delete sel;
+    delete cell;
+    delete  rows;
+    delete table;
+    delete tables;
+    delete act;
+}
 

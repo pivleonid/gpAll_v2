@@ -573,7 +573,7 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
            wordapp.tableAddColumn(1, i+1, "Сумма всех элементов", "[" + QString::number(i) + "]" , 1);
            continue;
        }
-       wordapp.tableAddColumn(1, i+1, QString::number(i), "[" + QString::number(i) + "]" , 1);
+       wordapp.tableAddColumn(1, i+1, QString::number(i+1), "[" + QString::number(i) + "]" , 1);
    }
 
 
@@ -581,6 +581,19 @@ int  MainWindow::operationSumRefDez(QMap<QString, QList<QStringList>>& mapVarLis
    ui->progressBar->setValue(80);
    QCoreApplication::processEvents();
    wordapp.tableFill(tableDat,listLabel,1,2) ;
+
+   //
+   for(int i = 0; i < co; i++){
+      QTableWidgetItem* item = ui->tableWidget->item(i, 0);
+      QString bomName = item->text();
+      wordapp.tableAddLineWithText(1,1, QString::number(i+1) + ":/n\n"+ bomName);
+   }
+
+
+
+   //
+
+
    wordapp.setVisible();
   k++;
 

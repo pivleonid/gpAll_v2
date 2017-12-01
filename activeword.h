@@ -265,33 +265,11 @@ void selectionCopyAllText(bool buffer);
                       int afterColumn,  /*!< [in] после какой колонки надо вставить колонку? */
                       QString text,     /*!< [in] название новой колонки */
                       QString label,    /*!< [in] метка колонки */
-                      int row)          /*!< [in] номер строки для вствки колонки*/
-  {
-      QAxObject* act = wordApplication_->querySubObject("ActiveDocument");
-      QAxObject* tables = act->querySubObject("Tables");
-      //индекс указывает на искомую таблицу
-      QAxObject* table = tables->querySubObject("Item(const QVariant&)", indexTable);
-       QAxObject* columns =  table->querySubObject("Columns");
-      QAxObject* col = columns->querySubObject("Item(const QVariant&)", afterColumn);
-      col->dynamicCall("Select()");
-       //Selection.InsertColumnsRight
-       QAxObject* wordSelection = wordApplication_->querySubObject("Selection");
-       wordSelection->dynamicCall("InsertColumnsRight()");
+                      int row          /*!< [in] номер строки для вствки колонки*/
+                                    );
 
-
-       //вставка названия колонки
-       QAxObject* cell = table->querySubObject("Cell(const QVariant& , const QVariant&)",row ,afterColumn + 1);
-       cell->querySubObject("Range")->dynamicCall("Select()");
-       QAxObject* sel =wordApplication_->querySubObject("Selection");
-       sel->dynamicCall("TypeText(Text)", QVariant(text));
-        //вставка метки в ячейку
-       cell = table->querySubObject("Cell(const QVariant& , const QVariant&)",row + 1 ,afterColumn + 1);
-       cell->querySubObject("Range")->dynamicCall("Select()");
-       sel =wordApplication_->querySubObject("Selection");
-       sel->dynamicCall("TypeText(Text)", QVariant(label));
-  }
-
-
+  //Добавляет строку и string в таблицу, где number - номер ячейки
+  void tableAddLineWithText(int tableIndex,  int number, QString string);
 
 };
 
