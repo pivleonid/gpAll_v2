@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
+#include <datastorage.h>
 namespace Ui {
   class MainWindow;
 }
@@ -10,7 +10,7 @@ struct list_t{
   QString str;
   int n;
 };
-//QList<list_t> sklad;
+
 typedef QList<list_t> listStringInt_t;
 
 class MainWindow : public QMainWindow
@@ -38,18 +38,12 @@ private:
   void clear();
   void generate();
   void openAbout();
-  //вспомогательные функции
-  //Получение и суммирование всех BOM файлов
-  //                    [key] - [эл-т1][кол-во][%]
-  //                            [эл-т2][кол-во][%]
- int operationSumRefDez(QMap<QString, QList<QStringList>> & mapVarLisrCont);
+  //Чтение данных из входных файлов
+ int  ReadAllBom(QMap <QString, QList<TData> > &allBom);
   //Получение данных со склада
-  listStringInt_t operationSklad();
+  listStringInt_t readSklad();
   // поиск элементов из BOM файла в файле со складом.
-  // dataSkladAndSum = [ключ] -> [0] == "partNumber"
-  //                             [1] == "Кол-во всех элементов во всех BOM'ах"
-  //                             [2] == "Кол-во этих элементов на складе"
- QList<QStringList> operationSearch( QMap<QString, QList<QStringList>> & dataSkladAndSum, listStringInt_t &dataSklad);
+ QList<QStringList> operationSearch( QMap <QString, QList<TData> > &allBom, listStringInt_t &dataSklad);
 
 };
 

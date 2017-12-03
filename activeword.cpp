@@ -456,7 +456,7 @@ int ActiveWord::tableFill(QList<QStringList> tableDat_in, QStringList tableLabel
 //cell->querySubObject("Range")->dynamicCall("InsertAfter(Text)", "Это ячейка 1:1");//, "AbraCadabra");
 
 
-void ActiveWord::tableMergeCell(int tableIndex, QVariant label, QVariant str, int numberCol, int numberStr){
+void ActiveWord::tableMergeCell(int tableIndex, QVariant label, int numberCol, int numberStr){
 
   QAxObject* act = wordApplication_->querySubObject("ActiveDocument");
   QAxObject* tables = act->querySubObject("Tables");
@@ -477,7 +477,7 @@ void ActiveWord::tableMergeCell(int tableIndex, QVariant label, QVariant str, in
   params.operator << (QVariant("1"));// 0 =  операция поиска заканчивается, 1 = операция поиска продолжается ,
   //если достигнут начало или конец диапазона поиска
   params.operator << (QVariant(true)); //(Для применения форматирования необходимо TRUE)
-  params.operator << (QVariant(str));//Текст для замены
+  params.operator << (QVariant(""));//Текст для замены
   params.operator << (QVariant(0)); //2 = Замена всех; 1 = Замена первого; 0 = без замен.
   params.operator << (QVariant(true)); //облако пафоса
   params.operator << (QVariant(true)); //облако пафоса
@@ -492,6 +492,7 @@ void ActiveWord::tableMergeCell(int tableIndex, QVariant label, QVariant str, in
                                               "const QVariant&,const QVariant&,const QVariant&)",
                                               params);
   //
+
   wordSelection->dynamicCall("SelectCell");
 
   wordSelection->dynamicCall("MoveRight(const QVariant&, const QVariant&, const QVariant&)", 1, numberCol, 1) ;
@@ -500,8 +501,8 @@ void ActiveWord::tableMergeCell(int tableIndex, QVariant label, QVariant str, in
   QAxObject* cells =  wordSelection->querySubObject("Cells");
   cells->dynamicCall("Merge()");
 
-  wordSelection->dynamicCall("Delete(wdCharacter, 1)");
-  wordSelection->dynamicCall("TypeText(const QVariant&)", str);
+  //wordSelection->dynamicCall("Delete(wdCharacter, 1)");
+ // wordSelection->dynamicCall("TypeText(const QVariant&)", label);
 
   delete cells;
   delete findString;
@@ -634,9 +635,10 @@ void ActiveWord::tableAddColumn(int indexTable, int afterColumn, QString text, Q
 }
 
 
-void ActiveWord::tableAddLineWithText(int tableIndex, int number, QString string){
+int ActiveWord::tableAddLineWithText(int tableIndex, int number, QString string){
 
     QAxObject* act = wordApplication_->querySubObject("ActiveDocument");
+
     QAxObject* tables = act->querySubObject("Tables");
 
     QAxObject* table = tables->querySubObject("Item(const QVariant&)", tableIndex);

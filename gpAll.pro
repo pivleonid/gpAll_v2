@@ -33,7 +33,8 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     activeexcel.h \
-    activeword.h
+    activeword.h \
+    datastorage.h
 
 FORMS += \
         mainwindow.ui
