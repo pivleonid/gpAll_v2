@@ -255,13 +255,13 @@ void selectionCopyAllText(bool buffer);
   Объединение ячеек в таблице.
   Внимание! Кол-во объединенных ячеек вправо- начинаются с 1. А вниз с 0!
   */
-  void tableMergeCell(int tableIndex, QVariant label, int numberCol, int numberStr);
+  int tableMergeCell(int tableIndex, QVariant label, int numberCol, int numberStr);
 
   QVariant tablesCount();
 
 
   //Добавление колонки с меткой
-  void tableAddColumn(int indexTable,   /*!< [in] индекс таблицы */
+  int tableAddColumn(int indexTable,   /*!< [in] индекс таблицы */
                       int afterColumn,  /*!< [in] после какой колонки надо вставить колонку? */
                       QString text,     /*!< [in] название новой колонки */
                       QString label,    /*!< [in] метка колонки */
