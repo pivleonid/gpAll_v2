@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Компоненты для закупок v.2.0.0.0 от 26.10.2017</string>
+   <string>Компоненты для закупок v.3.0.0.0 от 04.12.2017</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
@@ -56,13 +56,13 @@
       </property>
      </spacer>
     </item>
-    <item row="4" column="0" colspan="3">
+    <item row="3" column="0" colspan="3">
      <widget class="QLabel" name="label_2">
       <property name="frameShape">
        <enum>QFrame::WinPanel</enum>
       </property>
       <property name="text">
-       <string>d:/projects/gpAll/склад  03.10.17.xlsx</string>
+       <string/>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -103,7 +103,7 @@
        <number>0</number>
       </property>
       <property name="horizontalScrollBarPolicy">
-       <enum>Qt::ScrollBarAsNeeded</enum>
+       <enum>Qt::ScrollBarAlwaysOff</enum>
       </property>
       <property name="sizeAdjustPolicy">
        <enum>QAbstractScrollArea::AdjustToContents</enum>
@@ -115,7 +115,7 @@
        <enum>QAbstractItemView::ScrollPerItem</enum>
       </property>
       <property name="rowCount">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="columnCount">
        <number>3</number>
@@ -124,7 +124,7 @@
        <bool>true</bool>
       </attribute>
       <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>200</number>
+       <number>180</number>
       </attribute>
       <attribute name="horizontalHeaderMinimumSectionSize">
        <number>10</number>
@@ -141,16 +141,6 @@
       <attribute name="verticalHeaderStretchLastSection">
        <bool>true</bool>
       </attribute>
-      <row>
-       <property name="text">
-        <string>1</string>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>2</string>
-       </property>
-      </row>
       <column>
        <property name="text">
         <string>BOM файлы</string>
@@ -166,39 +156,9 @@
         <string>%</string>
        </property>
       </column>
-      <item row="0" column="0">
-       <property name="text">
-        <string>d:\projects\gpAll\ФБ. РКД. Преселектор 0040S. Ведомость   v1.0.2.xlsx</string>
-       </property>
-      </item>
-      <item row="0" column="1">
-       <property name="text">
-        <string>5</string>
-       </property>
-      </item>
-      <item row="0" column="2">
-       <property name="text">
-        <string>10</string>
-       </property>
-      </item>
-      <item row="1" column="0">
-       <property name="text">
-        <string>d:\projects\gpAll\ФБ. РКД. Преселектор 0040S. Ведомость   v1.0.3.xlsx</string>
-       </property>
-      </item>
-      <item row="1" column="1">
-       <property name="text">
-        <string>3</string>
-       </property>
-      </item>
-      <item row="1" column="2">
-       <property name="text">
-        <string>23</string>
-       </property>
-      </item>
      </widget>
     </item>
-    <item row="5" column="0" colspan="3">
+    <item row="4" column="0" colspan="3">
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QPushButton" name="pushButton_4">
@@ -234,7 +194,7 @@
       </item>
      </layout>
     </item>
-    <item row="3" column="0">
+    <item row="2" column="0">
      <spacer name="horizontalSpacer_3">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -247,14 +207,14 @@
       </property>
      </spacer>
     </item>
-    <item row="3" column="1">
+    <item row="2" column="1">
      <widget class="QPushButton" name="pushButton_2">
       <property name="text">
        <string>Выбрать файл склада</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="2">
+    <item row="2" column="2">
      <spacer name="horizontalSpacer_4">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -263,19 +223,6 @@
        <size>
         <width>135</width>
         <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="2" column="1">
-     <spacer name="verticalSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
        </size>
       </property>
      </spacer>
@@ -314,7 +261,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>v2.0.0.0</string>
+    <string>v3.0.0.0</string>
    </property>
   </action>
   <action name="action">

@@ -136,15 +136,19 @@ void  MainWindow::generate(){
 
     //
 
- //1 колонка - это partNumber последняя - сумма всех
 
+    // добавляю пустую строчку
+    word.tableAddLineWithText(1,1, "");
+     //1 колонка - это partNumber последняя - сумма всех
     for(int i = 0; i < b-3; i++){
        QTableWidgetItem* item = ui->tableWidget->item(i, 0);
        QString bomName = item->text();
        word.tableAddLineWithText(1,1, QString::number(i+1) + ":\n"+ bomName);
-       word.tableMergeCell(1, bomName,b- 1, 0);
+       word.tableMergeCell(1, bomName, b, 0);
 
     }
+    QDateTime dt = QDateTime::currentDateTime();
+    word.tableAddLineWithText(1,1, dt.toString());
  word.setVisible();
  ui->progressBar->setValue(100);
  QCoreApplication::processEvents();
@@ -544,46 +548,3 @@ void MainWindow::mesOut(QString mes){
 }
 
 
-
-
-
-///ВАЖНО!!!
-/// //  //замена меток. [C] - конденсаторы.
-//    QString  str;
-//    QFile file("Названия групп.txt");
-//    QTextCodec *codec = QTextCodec::codecForName("CP1251");
-//    if(file.open(QIODevice::ReadOnly |QIODevice::Text)){
-//        while (!file.atEnd()){
-//            QByteArray line = file.readLine();
-//            QTextCodec *codec = QTextCodec::codecForName("CP1251");
-//            str += codec->toUnicode(line);
-//        }
-//    }
-//    else qDebug()<< "don't open file";
-//    QStringList splitStr = str.split("\n");
-//    QMap<QString, QString> tem;
-//       foreach (auto st, splitStr) {
-//           QStringList split = st.split("-");
-//           tem[split[0]] = split[1];
-//       }
-//       QList<QString> keys = tem.keys();
-//    for (QList<QStringList>::iterator var = inWord.begin(); var < inWord.end(); var++) {
-//        if((*var).at(0) == (*var).at(2)){
-//            QString b = (*(var )).at(1);
-//            int index = keys.indexOf(b);
-//            if( index < 0){
-//                ( *(var)).clear();
-//               (*var) << "" << "Прочие" << "" << ""<< "" << "" << "" << "";
-//                continue;
-//            }
-//            QString str = keys[index];
-//            QString a = tem[str];
-//             ( *(var)).clear();
-//            (*var) << "" << a << "" << ""<< "" << "" << "" << "";
-//            int c;
-//            c++;
-//        }
-//    }
-//    return inWord;
-
-//}
