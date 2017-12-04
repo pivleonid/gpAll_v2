@@ -12,7 +12,7 @@
 
 #define EXCEL_COLOR_GREEN 5287936
 #define EXCEL_COLOR_YELLOW 65535
-#define EXCEL_COLOR_RED 5287936
+#define EXCEL_COLOR_RED 255
 #define EXCEL_COLOR_WHITE 16777215
 #define EXCEL_COLOR_BLUE 12611584
 
@@ -29,7 +29,10 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->action,SIGNAL(triggered(bool)), this, SLOT(openAbout()));
 
    ui->progressBar->setValue(0);
-    ui->tableWidget->setColumnWidth(0, 550);
+   ui->pushButton_3->setEnabled(false);
+
+   //ui->tableWidget->setColumnWidth(0, 550);
+
 
 }
 //------------------------------------------------------------------------
@@ -66,7 +69,7 @@ void MainWindow::openBoms(){
   // Ресайзим колонки по содержимому
       //ui->tableWidget->resizeColumnsToContents();
 
-
+    ui->pushButton_3->setEnabled(true);
 
 }
 //------------------------------------------------------------------------
@@ -77,6 +80,8 @@ void MainWindow::clear(){
   fileName_DATAs.clear();
   fileName_DATA.clear();
   ui->progressBar->setValue(0);
+
+  ui->pushButton_3->setEnabled(false);
 
 
 
@@ -312,6 +317,7 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
         int refDez = 0;
         int partNumber = 0;
         int qty = 0;
+        int color = 0;
         //В каждом документе в первом столбце есть #, после которой идут элементы
         for (int i = 1; i < 100 ; i++){
             if (excel.sheetCellInsert(sheet, data, i, 1)){
@@ -360,10 +366,39 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
                 qtyN = data;
             }
             else {mesOut("Ошибка обработки BOM данных!"); flagErr = true;}
+            if(excel.sheetCellColorInsert(sheet, data, i, qty)){
+                color = data.toInt();
+            }
+            else {mesOut("Не могу прочитать цвет ячейки!"); flagErr = true;}
+
+
 
             if(refN.toString() == "" && partNumberN.toString() == "" && qtyN.toString() == "" )
                 break;
-            storage.insert(refN.toString(), partNumberN.toString(), qtyN.toInt(),partNumbCount , percent,co );
+            switch (color) {
+            case EXCEL_COLOR_WHITE:
+                color = 5;
+                break;
+            case EXCEL_COLOR_BLUE:
+                color = 0;
+                break;
+            case EXCEL_COLOR_RED:
+                color = 150;
+                break;
+            case EXCEL_COLOR_YELLOW:
+                color = 1000;
+                break;
+            case EXCEL_COLOR_GREEN:
+                color = 70;
+                break;
+            default:
+                color = 5;
+                mesOut("Цвет partNumber'a: " + partNumberN.toString() + " не стандартный" +
+                       "\nПо умолчанию равен безцвеному - х5");
+                break;
+            }
+
+            storage.insert(refN.toString(), partNumberN.toString(), qtyN.toInt(),partNumbCount , percent,co, color );
 
 
 

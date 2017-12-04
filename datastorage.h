@@ -5,6 +5,8 @@
 #include <QMap>
 
 struct TData{
+int perCent;
+int color;
 QString part;
 QList<int> counts;
 };
@@ -13,12 +15,7 @@ class dataStorage{
     QMap <QString, QList<TData>> storage_;
 public:
 
-
-    QMap <QString, QList<TData>> result(){
-
-    }
-
-    void insert(QString refDez, QString partNum, int qty, int partNumbCount, int percent, int numberBom ){
+    void insert(QString refDez, QString partNum, int qty, int partNumbCount, int percent, int numberBom, int color ){
         numberBom++; //т.к. 0 это первый BOM
         int c = refDez.indexOf(",");
         if(c > 0){
@@ -31,7 +28,7 @@ public:
         refDez.remove(QRegExp("[^A-Za-zА-Яа-я]"));
 
         int countPart = qty * partNumbCount;
-        int countPartpERCENT = qty * partNumbCount + ceil(qty * partNumbCount*percent/100);
+        int countPartPercent = qty * partNumbCount + ceil(qty * partNumbCount*percent/100);
         // Есть ли такой ключ?
         bool keyF = false;
         foreach (auto var, storage_.keys()) {
@@ -41,9 +38,10 @@ public:
             }
         }
         int k = 0; // для отладки
-        //Такой ключ уже существует
+//------Такой ключ уже существует
         if(keyF == true){
-            bool PartNumbF = false;//есть ли такой partNumber?
+            bool PartNumbF = false;
+//---#------есть ли такой partNumber?
             for (int i = 0; i < storage_[refDez].count(); i++) {
                 int c = storage_[refDez].count(); //сколько
                 QString a = storage_[refDez].at(i).part;
@@ -71,11 +69,12 @@ public:
 //                    break;
                 }
             }
-            // такого partNumber'а нет
+//---#------такого partNumber'а нет
             if( PartNumbF == false ){
                 QList<TData> bomNumb;
                 TData strAndNumb;
                 strAndNumb.part = partNum;
+                strAndNumb.color = color;
                 for(int i = 0; i < numberBom; i++){
                     if(i == numberBom - 1){
                         strAndNumb.counts << countPart;
@@ -103,11 +102,12 @@ public:
                 k++;
             }
 
-        //такого ключа нет
+//------такого ключа нет
         else{
             QList<TData> bomNumb;
             TData strAndNumb;
             strAndNumb.part = partNum;
+            strAndNumb.color = color;
             for(int i = 0; i < numberBom; i++){
                 if(i == numberBom - 1){
                     strAndNumb.counts << countPart;
