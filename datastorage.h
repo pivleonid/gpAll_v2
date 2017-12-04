@@ -5,10 +5,10 @@
 #include <QMap>
 
 struct TData{
-int perCent;
-int color;
 QString part;
+int color;
 QList<int> counts;
+QList<int> perCent;
 };
 
 class dataStorage{
@@ -55,9 +55,10 @@ public:
                             for(int i = 0; i < storage_[key].count(); i++){
                                 //сколько эл-тов Qlist<int>
                                 int c = storage_[key][i].counts.count();
-                                if( c < numberBom )
+                                if( c < numberBom ){
                                     storage_[key][i].counts << 0;
-
+                                    storage_[key][i].perCent << 0;
+                                }
                             }
                         }
 
@@ -65,6 +66,7 @@ public:
                     }
                     num = storage_[refDez].at(i).counts[numberBom-1];
                     storage_[refDez][i].counts[numberBom-1] += countPart;
+                    storage_[refDez][i].perCent[numberBom-1] += countPartPercent;
                     PartNumbF = true;
 //                    break;
                 }
@@ -78,9 +80,11 @@ public:
                 for(int i = 0; i < numberBom; i++){
                     if(i == numberBom - 1){
                         strAndNumb.counts << countPart;
+                        strAndNumb.perCent << countPartPercent;
                         break;
                     }
                     strAndNumb.counts << 0;
+                    strAndNumb.perCent << 0;
 
                 }
                 bomNumb << strAndNumb;
@@ -90,9 +94,10 @@ public:
                     for(int i = 0; i < storage_[key].count(); i++){
                         //сколько эл-тов Qlist<int>
                         int c = storage_[key][i].counts.count();
-                        if( c < numberBom )
+                        if( c < numberBom ){
                             storage_[key][i].counts << 0;
-
+                            storage_[key][i].perCent << 0;
+                        }
                     }
                 }
                 k++;
@@ -111,6 +116,7 @@ public:
             for(int i = 0; i < numberBom; i++){
                 if(i == numberBom - 1){
                     strAndNumb.counts << countPart;
+                    strAndNumb.perCent << countPartPercent;
                     break;
                 }
                 strAndNumb.counts << 0;

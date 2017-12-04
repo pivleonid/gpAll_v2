@@ -29,7 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->action,SIGNAL(triggered(bool)), this, SLOT(openAbout()));
 
    ui->progressBar->setValue(0);
-   ui->pushButton_3->setEnabled(false);
+
+   //ui->pushButton_3->setEnabled(false);
 
    //ui->tableWidget->setColumnWidth(0, 550);
 
@@ -119,15 +120,31 @@ void  MainWindow::generate(){
     QList<QStringList> tableDat = operationSearch(allBom, sklad);
 
 
+    int BomCount = ui->tableWidget->rowCount();
 
-    int b = tableDat[0].count();
-    for (int i = 0; i < b - 1 ; i++){
-        if(i == b - 2){
-            word.tableAddColumn(1, i+1, "Наличие на складе", "[" + QString::number(i) + "]" , 1);
+
+
+
+    int b = tableDat[0].count() - 1;
+    for (int i = 0; i < b  ; i++){
+        if(i == BomCount){
+            word.tableAddColumn(1, i+1, "Сумма эл-тов", "[" + QString::number(i) + "]" , 1);
             continue;
         }
-        if(i == b - 3){
-            word.tableAddColumn(1, i+1, "Сумма всех элементов", "[" + QString::number(i) + "]" , 1);
+        if(i == BomCount*2 + 1){
+            word.tableAddColumn(1, i+1, "Сумма эл-тов + %", "[" + QString::number(i) + "]" , 1);
+            continue;
+        }
+        if(i > BomCount && i < BomCount*2+1){
+            word.tableAddColumn(1, i+1,  QString::number(i-BomCount)+ " + %", "[" + QString::number(i) + "]" , 1);
+            continue;
+        }
+        if(i == b - 1){
+            word.tableAddColumn(1, i+1, "Закупить", "[" + QString::number(i) + "]" , 1);
+            continue;
+        }
+        if(i == b - 2){
+            word.tableAddColumn(1, i+1, "Наличие на складе", "[" + QString::number(i) + "]" , 1);
             continue;
         }
         word.tableAddColumn(1, i+1, QString::number(i+1), "[" + QString::number(i) + "]" , 1);
@@ -140,12 +157,13 @@ void  MainWindow::generate(){
     word.tableFill(tableDat,listLabel,1,2) ;
 
     //
-
+ word.setVisible();
 
     // добавляю пустую строчку
+
     word.tableAddLineWithText(1,1, "");
      //1 колонка - это partNumber последняя - сумма всех
-    for(int i = 0; i < b-3; i++){
+    for(int i = 0; i < BomCount; i++){
        QTableWidgetItem* item = ui->tableWidget->item(i, 0);
        QString bomName = item->text();
        word.tableAddLineWithText(1,1, QString::number(i+1) + ":\n"+ bomName);
@@ -154,9 +172,9 @@ void  MainWindow::generate(){
     }
     QDateTime dt = QDateTime::currentDateTime();
     word.tableAddLineWithText(1,1, dt.toString());
- word.setVisible();
- ui->progressBar->setValue(100);
- QCoreApplication::processEvents();
+    word.setVisible();
+    ui->progressBar->setValue(100);
+    QCoreApplication::processEvents();
 
 
     //
@@ -404,7 +422,7 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
 
         }
         excel.workbookClose(ex1);
-
+         QMap <QString, QList<TData> > data1 = storage.ret();
 
 
         ui->progressBar->setValue(proc);
@@ -423,7 +441,16 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
         }
 
     }
-    //просуммирую все эл-ты, создав еще одну колонку
+    //Взять BOM и сравнить все проценты !!!
+   // Во всех partNumer хранятся одинаковое кол-во эл-тов?
+   foreach (auto key, data.keys()) {
+       for (int i = 0; i < data[key].count(); i++){
+           if (data[key][i].perCent.count() != co)
+               return -5;
+       }
+
+   }
+    //просуммирую все эл-ты, создав еще одну колонку для элементов
     foreach (auto key, data.keys()) {
 
         for (int i = 0; i < data[key].count(); i++){
@@ -433,6 +460,19 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
 
             }
              data[key][i].counts << per;
+        }
+
+    }
+    //просуммирую все эл-ты, создав еще одну колонку для процентов
+    foreach (auto key, data.keys()) {
+
+        for (int i = 0; i < data[key].count(); i++){
+            int per = 0;
+            for(int j = 0; j < co; j++){
+                 per += data[key][i].perCent[j];
+
+            }
+             data[key][i].perCent << per;
         }
 
     }
@@ -464,13 +504,16 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
 
                 for(int i = 0; i < data[key1].count() ; i++){
                     //Сколько элементов?
-                    QList<int> count;
+                    QList<int> count, perCount;
                     for(int j = 0; j < data[key1][i].counts.count() ; j++){
                         count << data[key1][i].counts[j];
+                        perCount << data[key1][i].perCent[j];
                     }
                     TData per;
                     per.counts << count;
+                    per.perCent << perCount;
                     per.part = data[key1][i].part;
+                    per.color = data[key1][i].color;
                      allBom[tem[key2]] << per;
                      int k;
                      k++;
@@ -500,12 +543,12 @@ QList<QStringList> MainWindow::operationSearch(QMap <QString, QList<TData> > &al
              QString s1=  sklad[j].str;
              if(sklad[j].str.contains(partNumber, Qt::CaseInsensitive) == true){
                   flagFound = true;
-                   allBom[key][i].counts << sklad[j].n;
+                   allBom[key][i].perCent << sklad[j].n;
               }
 
           }
           if( flagFound == false)
-              allBom[key][i].counts << 0;
+              allBom[key][i].perCent << 0;
 
 
         }
@@ -520,7 +563,7 @@ QList<QStringList> MainWindow::operationSearch(QMap <QString, QList<TData> > &al
         per << str;
         //кол-во колонок
         int colomns = allBom[key][0].counts.count();
-        for(int i = 1; i < colomns + 1; i++ )
+        for(int i = 1; i < allBom[key][0].counts.count() + allBom[key][0].perCent.count() + 2 ; i++ ) ///+ проценты
             per << "";
         tableDat << per;
         per.clear();
@@ -528,11 +571,24 @@ QList<QStringList> MainWindow::operationSearch(QMap <QString, QList<TData> > &al
         //i == кол-во TData
         for(int i = 0; i < allBom[key].count(); i++){
             per << allBom[key][i].part;
-
             for(int j = 0; j < allBom[key][i].counts.count(); j++){
-                int c = allBom[key][i].counts[j];
+
                 per << QString::number(allBom[key][i].counts[j]);
             }
+
+            for(int j = 0; j < allBom[key][i].perCent.count(); j++)
+                   per << QString::number(allBom[key][i].perCent[j]);
+            //Закупить
+            int max = allBom[key][i].perCent.count();
+            //allBom[key][i].perCent[max -1] == склад
+            //allBom[key][i].perCent[max -2] == Rez + %
+            int x = abs(allBom[key][i].perCent[max-1] - allBom[key][i].perCent[max - 2]);
+            if(x < allBom[key][i].color)
+                x = allBom[key][i].color;
+            //синий цвет
+            if(allBom[key][i].color == 0)
+                x = 0;
+            per << QString::number(x);
             tableDat << per;
             per.clear();
         }

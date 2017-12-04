@@ -62,7 +62,7 @@
        <enum>QFrame::WinPanel</enum>
       </property>
       <property name="text">
-       <string/>
+       <string>d:/projects/gpAll/склад  03.10.17.xlsx</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -115,7 +115,7 @@
        <enum>QAbstractItemView::ScrollPerItem</enum>
       </property>
       <property name="rowCount">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="columnCount">
        <number>3</number>
@@ -141,6 +141,16 @@
       <attribute name="verticalHeaderStretchLastSection">
        <bool>true</bool>
       </attribute>
+      <row>
+       <property name="text">
+        <string>Новая строка</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>Новая строка</string>
+       </property>
+      </row>
       <column>
        <property name="text">
         <string>BOM файлы</string>
@@ -156,6 +166,36 @@
         <string>%</string>
        </property>
       </column>
+      <item row="0" column="0">
+       <property name="text">
+        <string>d:\projects\gpAll\ФБ. РКД. Преселектор 0040S. Ведомость   v1.0.2.xlsx</string>
+       </property>
+      </item>
+      <item row="0" column="1">
+       <property name="text">
+        <string>2</string>
+       </property>
+      </item>
+      <item row="0" column="2">
+       <property name="text">
+        <string>25</string>
+       </property>
+      </item>
+      <item row="1" column="0">
+       <property name="text">
+        <string>d:\projects\gpAll\ФБ. РКД. Преселектор 0040S. Ведомость   v1.0.3.xlsx</string>
+       </property>
+      </item>
+      <item row="1" column="1">
+       <property name="text">
+        <string>3</string>
+       </property>
+      </item>
+      <item row="1" column="2">
+       <property name="text">
+        <string>30</string>
+       </property>
+      </item>
      </widget>
     </item>
     <item row="4" column="0" colspan="3">
