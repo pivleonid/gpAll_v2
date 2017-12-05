@@ -149,29 +149,44 @@ void  MainWindow::generate(){
         }
         word.tableAddColumn(1, i+1, QString::number(i+1), "[" + QString::number(i) + "]" , 1);
     }
+    word.tableAutoFitWindow(1);
 
-
-    QStringList listLabel = word.tableGetLabels(1, 2);
+    QStringList listLabel;
+   int ret = word.tableGetLabels(1, 2, listLabel);
     ui->progressBar->setValue(80);
     QCoreApplication::processEvents();
-    word.tableFill(tableDat,listLabel,1,2) ;
+
+
+    ret = word.tableFill(tableDat,listLabel,1,2) ;
 
     //
- word.setVisible();
+
 
     // добавляю пустую строчку
 
-    word.tableAddLineWithText(1,1, "");
+
+
      //1 колонка - это partNumber последняя - сумма всех
     for(int i = 0; i < BomCount; i++){
+
+
        QTableWidgetItem* item = ui->tableWidget->item(i, 0);
        QString bomName = item->text();
-       word.tableAddLineWithText(1,1, QString::number(i+1) + ":\n"+ bomName);
-       word.tableMergeCell(1, bomName, b, 0);
+        ret = word.tableAddLineWithText(1,1, QString::number(i+1) + ":\n"+ bomName);
+       if(ret < 0)
+         qDebug()<< "ret = "<<ret<<"; i = " << i;
+       if(i == 0)
+           word.tableMergeCell(1, bomName, b + 1, 0);
 
     }
+
     QDateTime dt = QDateTime::currentDateTime();
     word.tableAddLineWithText(1,1, dt.toString());
+
+    foreach (auto key, allBom.keys()) {
+        word.tableMergeCell(1, key, b + 1, 0);
+    }
+    //
     word.setVisible();
     ui->progressBar->setValue(100);
     QCoreApplication::processEvents();
@@ -427,7 +442,7 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
 
         ui->progressBar->setValue(proc);
         QCoreApplication::processEvents();
-        proc += proc;
+        proc = proc * (co+1);
         co++;
     }
 //------конец пробега по всем таблицам
@@ -559,7 +574,7 @@ QList<QStringList> MainWindow::operationSearch(QMap <QString, QList<TData> > &al
     foreach (auto key, allBom.keys()) {
         QStringList per;
         QString str;
-        str = key; str.prepend("["); str.append("]");
+        str = key; //str.prepend("["); str.append("]");
         per << str;
         //кол-во колонок
         int colomns = allBom[key][0].counts.count();
