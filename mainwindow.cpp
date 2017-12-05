@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
    ui->progressBar->setValue(0);
 
-   //ui->pushButton_3->setEnabled(false);
+   ui->pushButton_3->setEnabled(false);
 
    //ui->tableWidget->setColumnWidth(0, 550);
 
@@ -67,8 +67,10 @@ void MainWindow::openBoms(){
       ui->tableWidget->setItem(rowCont, 2, item2);
       rowCont++;
   }
-  // Ресайзим колонки по содержимому
-      //ui->tableWidget->resizeColumnsToContents();
+
+  ui->tableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+   ui->tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
 
     ui->pushButton_3->setEnabled(true);
 
@@ -597,13 +599,23 @@ QList<QStringList> MainWindow::operationSearch(QMap <QString, QList<TData> > &al
             int max = allBom[key][i].perCent.count();
             //allBom[key][i].perCent[max -1] == склад
             //allBom[key][i].perCent[max -2] == Rez + %
-            int x = abs(allBom[key][i].perCent[max-1] - allBom[key][i].perCent[max - 2]);
-            if(x < allBom[key][i].color)
-                x = allBom[key][i].color;
-            //синий цвет
-            if(allBom[key][i].color == 0)
-                x = 0;
-            per << QString::number(x);
+            int x = allBom[key][i].perCent[max-1];
+            int y = allBom[key][i].perCent[max - 2];
+int z;
+            //Ежели цвет синий
+            if(allBom[key][i].color == 0){
+                z = -666;
+                per << QString::number(z);
+                tableDat << per;
+                per.clear();
+                continue;
+            }
+           if(y <= allBom[key][i].color)
+               y = allBom[key][i].color;
+             z = y - x;
+           if(z < 0)
+               z = 0;
+            per << QString::number(z);
             tableDat << per;
             per.clear();
         }
