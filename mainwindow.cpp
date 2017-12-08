@@ -107,7 +107,6 @@ void  MainWindow::generate(){
     QMap <QString, QList<TData> > allBom;
     int err = 0;
     err = ReadAllBom(allBom);
-
     if(err < 0)
         mesOut("Error №" + QString::number(err));
 
@@ -305,10 +304,7 @@ listStringInt_t MainWindow::readSklad(){
 //------------------------------------------------------------------------
 int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
 
-
     QMap <QString, QList<TData> > data;
-
-    bool flagErr = false; // флаг выставляется при "Ошибка обработки BOM данных!"
     //для чтения из таблицы и подсчета процента завершения работы excel'я
     int proc = ui->tableWidget->rowCount();
     QStringList strList; //путь к файлу. Только первая колонка
@@ -330,7 +326,6 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
     proc = 60 / proc; // для подсчета процента
 
     dataStorage storage;
-    int k = 0; //для отладки
 
 //--------- пробег по всем эл-там таблицы
     for (QStringList::iterator str = strList.begin(); str < strList.end(); str++) {
@@ -370,12 +365,12 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
                             if((refDez != 0) && (partNumber != 0) && (qty != 0))
                                 break;
                         }
-                        else { mesOut("Ошибка обработки BOM данных!"); flagErr = true;}
+                        else  mesOut("Ошибка обработки BOM данных!");
                     }
                     break;
                 }
             }
-            else { mesOut("Ошибка обработки BOM данных!") ;flagErr = true;}
+            else  mesOut("Ошибка обработки BOM данных!") ;
         }
         if(line * refDez * partNumber * qty == 0){
             mesOut("В файле:\n" + *str + "проверить наличие столбцов:\n #, Ref Designator, Part Number и QTY");
@@ -392,19 +387,19 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
             QVariant refN, partNumberN, qtyN ;
             if (excel.sheetCellInsert(sheet, data, i, refDez))
                 refN = data;
-            else   {mesOut("Ошибка обработки BOM данных!"); flagErr = true;}
+            else   mesOut("Ошибка обработки BOM данных!");
             if (excel.sheetCellInsert(sheet, data, i, partNumber)){
                 partNumberN = data;
             }
-            else   {mesOut("Ошибка обработки BOM данных!"); flagErr = true;}
+            else   mesOut("Ошибка обработки BOM данных!");
             if (excel.sheetCellInsert(sheet, data, i, qty)){
                 qtyN = data;
             }
-            else {mesOut("Ошибка обработки BOM данных!"); flagErr = true;}
+            else mesOut("Ошибка обработки BOM данных!");
             if(excel.sheetCellColorInsert(sheet, data, i, qty)){
                 color = data.toInt();
             }
-            else {mesOut("Не могу прочитать цвет ячейки!"); flagErr = true;}
+            else mesOut("Не могу прочитать цвет ячейки!");
 
 
 
@@ -442,9 +437,9 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
          QMap <QString, QList<TData> > data1 = storage.ret();
 
 
-        ui->progressBar->setValue(proc);
+        ui->progressBar->setValue(proc * (co + 1));
         QCoreApplication::processEvents();
-        proc = proc * (co+1);
+        //proc = proc * (co+1);
         co++;
     }
 //------конец пробега по всем таблицам
@@ -495,9 +490,10 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
     }
 
     //Здесь заменим ключи на соответствующие имена:
+
     QString  str;
     QFile file("Названия групп.txt");
-    QTextCodec *codec = QTextCodec::codecForName("CP1251");
+    QTextCodec::codecForName("CP1251");
     if(file.open(QIODevice::ReadOnly |QIODevice::Text)){
         while (!file.atEnd()){
             QByteArray line = file.readLine();
@@ -512,11 +508,14 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
         QStringList split = st.split("-");
         tem[split[0]] = split[1];
     }
-   // QMap <QString, QList<TData> > data;
+
+    // QMap <QString, QList<TData> > data;
     foreach (auto key1, data.keys()) {
+        bool keyFound = false;
         foreach (auto key2, tem.keys()) {
             if(key1 == key2){
-                allBom[tem[key2]]; //копирую ключи
+                keyFound = true;
+                allBom[tem[key2]]; //копирую ключ
                 //Сколько TData? == кол-ву refDez
 
                 for(int i = 0; i < data[key1].count() ; i++){
@@ -531,15 +530,32 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
                     per.perCent << perCount;
                     per.part = data[key1][i].part;
                     per.color = data[key1][i].color;
-                     allBom[tem[key2]] << per;
-                     int k;
-                     k++;
+                    allBom[tem[key2]] << per;
+                    int k;
+                    k++;
 
                 }
 
             }
         }
+        if(keyFound == false){
+            allBom["Прочие"];
+            for(int i = 0; i < data[key1].count() ; i++){
+                //Сколько элементов?
+                QList<int> count, perCount;
+                for(int j = 0; j < data[key1][i].counts.count() ; j++){
+                    count << data[key1][i].counts[j];
+                    perCount << data[key1][i].perCent[j];
+                }
+                TData per;
+                per.counts << count;
+                per.perCent << perCount;
+                per.part = data[key1][i].part;
+                per.color = data[key1][i].color;
+                 allBom["Прочие"] << per;
     }
+}
+}
 
 
     return 0;
@@ -578,8 +594,6 @@ QList<QStringList> MainWindow::operationSearch(QMap <QString, QList<TData> > &al
         QString str;
         str = key; //str.prepend("["); str.append("]");
         per << str;
-        //кол-во колонок
-        int colomns = allBom[key][0].counts.count();
         for(int i = 1; i < allBom[key][0].counts.count() + allBom[key][0].perCent.count() + 2 ; i++ ) ///+ проценты
             per << "";
         tableDat << per;

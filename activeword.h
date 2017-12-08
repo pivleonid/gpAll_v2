@@ -274,19 +274,29 @@ void selectionCopyAllText(bool buffer);
 
   int tableAutoFitWindow(int tableIndex){
       QAxObject* act = wordApplication_->querySubObject("ActiveDocument");
-      if(act == NULL)
+      if(act == NULL){
+       delete act;
           return -1;
+      }
       QAxObject* tables = act->querySubObject("Tables");
-      if(tables == NULL)
+      if(tables == NULL){
+          delete tables;
+          delete act;
           return -2;
+      }
 
       QAxObject* table = tables->querySubObject("Item(const QVariant&)", tableIndex);
-      if(table == NULL)
+      if(table == NULL){
+          delete table;
+          delete tables;
+          delete act;
           return -3;
+      }
       table->dynamicCall("AutoFitBehavior(wdAutoFitWindow)");
       delete table;
       delete tables;
       delete act;
+      return 0;
   }
 
 
@@ -319,6 +329,7 @@ QAxObject *selection = word->querySubObject("Selection");
 selection->dynamicCall("TypeText(adasdasdasdasd)");
 saveDocument(document, "Word",".docx", "D:\\");
 /--------------------------------------------------------------/
+
 /*  Копирование текста из документа в метку другого документа
   ActiveWord word;
   QAxObject* doc1 = word.documentOpen(true,"D:\\template1.docx");

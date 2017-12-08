@@ -11,7 +11,8 @@ QList<int> counts;
 QList<int> perCent;
 };
 
-class dataStorage{
+struct dataStorage{
+private:
     QMap <QString, QList<TData>> storage_;
 public:
 
@@ -43,7 +44,6 @@ public:
             bool PartNumbF = false;
 //---#------есть ли такой partNumber?
             for (int i = 0; i < storage_[refDez].count(); i++) {
-                int c = storage_[refDez].count(); //сколько
                 QString a = storage_[refDez].at(i).part;
                 if( a == partNum){
                     int num = storage_[refDez].at(i).counts.count(); //сколько эл-тов?
@@ -120,6 +120,7 @@ public:
                     break;
                 }
                 strAndNumb.counts << 0;
+                strAndNumb.perCent << 0;
 
             }
             bomNumb << strAndNumb;

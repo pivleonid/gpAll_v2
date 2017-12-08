@@ -192,8 +192,10 @@ int ActiveWord::selectionAlign(QString string, bool left, bool right, bool cente
 
 
 QAxObject* wordSelection = wordApplication_->querySubObject("Selection");
-if (wordSelection == NULL)
-  return -1;
+if (wordSelection == NULL){
+    delete wordSelection;
+    return -1;
+}
 QAxObject* findString =  wordSelection->querySubObject("Find");
 if (findString == NULL)
   return -2;

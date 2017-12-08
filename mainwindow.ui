@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Компоненты для закупок v.3.2.0.0 от 08.12.2017</string>
+   <string>Компоненты для закупок v.3.2.1.0 от 08.12.2017</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
@@ -121,7 +121,7 @@
        <number>3</number>
       </property>
       <attribute name="horizontalHeaderVisible">
-       <bool>true</bool>
+       <bool>false</bool>
       </attribute>
       <attribute name="horizontalHeaderDefaultSectionSize">
        <number>250</number>
@@ -261,7 +261,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>v3.2.0.0</string>
+    <string>v3.2.1.0</string>
    </property>
   </action>
   <action name="action">
