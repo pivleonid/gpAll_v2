@@ -8,7 +8,7 @@
 #include "qtextcodec.h"
 #include "qdatetime.h"
 #include "qinputdialog.h"
-
+#include "qsettings.h"
 
 #define EXCEL_COLOR_GREEN 5287936
 #define EXCEL_COLOR_YELLOW 65535
@@ -32,7 +32,22 @@ MainWindow::MainWindow(QWidget *parent) :
 
    ui->pushButton_3->setEnabled(false);
 
-   //ui->tableWidget->setColumnWidth(0, 550);
+
+   QFile file("gpAll.conf");
+    if(file.size() == 0)
+      return;
+    QSettings settings( "gpAll.conf", QSettings::IniFormat );
+    settings.beginGroup( "ColorLabel" );
+    QVariant text = settings.value("green");
+    ui->label_green->setText( text.toString());
+    text = settings.value("yellow");
+    ui->label_yellow->setText( text.toString());
+    text = settings.value("white");
+    ui->label_white->setText( text.toString());
+    text = settings.value("red");
+    ui->label_red->setText( text.toString());
+
+    settings.endGroup();
 
 
 }
@@ -407,24 +422,24 @@ int  MainWindow::ReadAllBom(QMap <QString, QList<TData> > &allBom){
                 break;
             switch (color) {
             case EXCEL_COLOR_WHITE:
-                color = 5;
+                color = ui->label_white->text().toInt();
                 break;
             case EXCEL_COLOR_BLUE:
-                color = 0;
+                color = -1;
                 break;
             case EXCEL_COLOR_RED:
-                color = 150;
+                color = ui->label_red->text().toInt();
                 break;
             case EXCEL_COLOR_YELLOW:
-                color = 1000;
+                color = ui->label_yellow->text().toInt();
                 break;
             case EXCEL_COLOR_GREEN:
-                color = 70;
+                color = ui->label_green->text().toInt();
                 break;
             default:
                 color = 5;
                 mesOut("Цвет partNumber'a: " + partNumberN.toString() + " не стандартный" +
-                       "\nПо умолчанию равен безцвеному - х5");
+                       "\nПо умолчанию равен  - 5");
                 break;
             }
 
@@ -617,7 +632,7 @@ QList<QStringList> MainWindow::operationSearch(QMap <QString, QList<TData> > &al
             int y = allBom[key][i].perCent[max - 2];
 int z;
             //Ежели цвет синий
-            if(allBom[key][i].color == 0){
+            if(allBom[key][i].color == -1){
                 z = -666;
                 per << QString::number(z);
                 tableDat << per;
@@ -669,6 +684,13 @@ void MainWindow::openAbout(){
 //------------------------------------------------------------------------
 MainWindow::~MainWindow()
 {
+    QSettings settings( "gpAll.conf", QSettings::IniFormat );
+         settings.beginGroup( "ColorLabel" );
+         settings.setValue( "green", ui->label_green->text() );
+         settings.setValue( "yellow", ui->label_yellow->text() );
+         settings.setValue( "red", ui->label_red->text() );
+         settings.setValue( "white", ui->label_white->text() );
+         settings.endGroup();
   delete ui;
 }
 //------------------------------------------------------------------------
