@@ -174,7 +174,7 @@ void  MainWindow::generate(){
 
 
     ret = word.tableFill(tableDat,listLabel,1,2) ;
-
+    qDebug() << "Таблица выгружена";
     //
 
 
@@ -592,6 +592,7 @@ QList<QStringList> MainWindow::operationSearch(QMap <QString, QList<TData> > &al
              if(sklad[j].str.contains(partNumber, Qt::CaseInsensitive) == true){
                   flagFound = true;
                    allBom[key][i].perCent << sklad[j].n;
+                   break;
               }
 
           }
@@ -626,8 +627,8 @@ QList<QStringList> MainWindow::operationSearch(QMap <QString, QList<TData> > &al
                    per << QString::number(allBom[key][i].perCent[j]);
             //Закупить
             int max = allBom[key][i].perCent.count();
-            //allBom[key][i].perCent[max -1] == склад
-            //allBom[key][i].perCent[max -2] == Rez + %
+            //allBom[key][i].perCent[max -1] == склад ==   x
+            //allBom[key][i].perCent[max -2] == Rez + % == y
             int x = allBom[key][i].perCent[max-1];
             int y = allBom[key][i].perCent[max - 2];
 int z;
@@ -641,9 +642,12 @@ int z;
             }
            if(y <= allBom[key][i].color)
                y = allBom[key][i].color;
-             z = y - x;
-           if(z < 0)
+             z = x - y;
+           if(z > 0)
                z = 0;
+           else
+            z = fabs(z);
+
             per << QString::number(z);
             tableDat << per;
             per.clear();
