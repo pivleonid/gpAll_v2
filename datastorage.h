@@ -3,6 +3,7 @@
 
 
 #include <QMap>
+#include "math.h"
 
 struct TData{
 QString part;
